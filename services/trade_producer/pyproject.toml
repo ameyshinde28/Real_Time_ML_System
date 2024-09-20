@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "src"
+version = "0.1.0"
+description = ""
+authors = ["ameyshinde28 <aammeeyy28@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+quixstreams = "^2.10.0"
+loguru = "^0.7.2"
+websocket-client = "^1.8.0"
+pydantic = "^2.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
