@@ -52,10 +52,13 @@ def produce_trades(
                 
 
 if __name__ == "__main__":
+    
+    from src.config import config
+    
     produce_trades(
-        kafka_broker_address='localhost:19092',
-        kafka_topic='trades',
-        product_id='ETH/USD'
+        kafka_broker_address=config.kafka_broker_address,
+        kafka_topic=config.kafka_topic,
+        product_id=config.product_id,
     )
     
     
