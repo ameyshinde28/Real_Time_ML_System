@@ -10,5 +10,5 @@
 - [x] Redpanda up and running
 - [x] Push some fake data to Redpanda
 - [x] Push real-time (real data) from Kraken
-- [ ] Extract config parameters
-- [ ] Dockerize it
+- [x] Extract config parameters
+- [x] Dockerize it

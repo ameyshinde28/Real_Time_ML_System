@@ -3,6 +3,7 @@ name: redpanda-owl-shop
 networks:
   redpanda_network:
     driver: bridge
+    name: redpanda_network
 volumes:
   redpanda: null
 services:
