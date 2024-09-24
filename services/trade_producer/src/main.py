@@ -1,4 +1,4 @@
-from src.kraken_websocket_api import KrakenWebSocketAPI, Trade
+from kraken_websocket_api import KrakenWebSocketAPI, Trade
 from loguru import logger
 
 from typing import List
@@ -53,7 +53,7 @@ def produce_trades(
 
 if __name__ == "__main__":
     
-    from src.config import config
+    from config import config
     
     # print(f"product ids: {config.product_ids}")
     

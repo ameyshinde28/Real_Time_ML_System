@@ -5,6 +5,8 @@ import json
 
 from pydantic import BaseModel
 
+
+
 class Trade(BaseModel):
     product_id: str
     quantity: float
