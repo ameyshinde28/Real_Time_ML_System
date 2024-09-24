@@ -17,6 +17,8 @@ class KrakenWebSocketAPI:
     """
     URL = 'wss://ws.kraken.com/v2'
     
+    
+    
     def __init__(self, product_id: str):
         """
         Initializes the KrakenWebsocketAPI instance
@@ -24,6 +26,7 @@ class KrakenWebSocketAPI:
         Args:
             product_id (str): The ptoduct id to get the trades from Kraken WebsocketAPI
         """
+
         self.product_id = product_id
         
         # establish connection to the Kraken websocket API
@@ -31,6 +34,7 @@ class KrakenWebSocketAPI:
         logger.debug("Connection Esablished")
         
         # Subscribe to the trades for the given "product_id"
+       
         self._subscribe(product_id)
         
     def get_trades(self) -> List[Trade]:
@@ -57,6 +61,7 @@ class KrakenWebSocketAPI:
             # -price
             # -qty
             # -timestamp
+            # breakpoint()
             trades.append(
                 Trade(
                     product_id=trade['symbol'],
@@ -75,6 +80,8 @@ class KrakenWebSocketAPI:
         """
         False
     
+    
+
     def _subscribe(self, product_id: str):
         """
         Establish connection to the Kraken websocket API and subscribe to the trades for the given 'product_id
@@ -84,23 +91,26 @@ class KrakenWebSocketAPI:
             
         """
         logger.info(f"Subscribing to trades for {product_id}")
+        # logger.info(f"Subscribing to trades for {product_ids}")
+        
         # Let's subscribe to the trades for the given 'product_id'
         
+        # for product_id in product_id:
         msg = {
             "method": "subscribe",
             "params": {
                 "channel": "trade",
                 "symbol": [product_id],
-                "snapshot": False
-                }
+                "snapshot": False,
+                },
             }
         self._ws.send(json.dumps(msg))
-        logger.info('Subscription worked!')
-        
+        logger.info(f'Subscription for {product_id} worked!')
+    
         # For each product_id we dump
         # The first 2 messages we get from the websocket, because they contain
         # no trade data, just confirmation on their end that the subscription was successful
-        
+    
         for product_id in [product_id]:
             _ = self._ws.recv()
             _ = self._ws.recv()

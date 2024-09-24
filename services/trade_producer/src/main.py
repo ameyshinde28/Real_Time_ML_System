@@ -55,8 +55,10 @@ if __name__ == "__main__":
     
     from src.config import config
     
+    # print(f"product ids: {config.product_ids}")
+    
     produce_trades(
-        kafka_broker_address=config.kafka_broker_address,
+        kafka_broker_address=config.kafka_broker_address, 
         kafka_topic=config.kafka_topic,
         product_id=config.product_id,
     )
