@@ -16,6 +16,7 @@ def init_ohlcv_candle(trade: dict):
         'low' : trade['price'],
         'close' : trade['price'],
         'volume' : trade['price'],
+        'product_id' : trade['product_id']
     }
 
 def update_ohlcv_candle(candle:dict, trade: dict):
@@ -29,7 +30,9 @@ def update_ohlcv_candle(candle:dict, trade: dict):
     candle['high'] = max(candle['high'], trade['price'])
     candle['low'] = min(candle['low'], trade['price'])
     candle['close'] = trade['price']
-    candle['volume'] += trade['quantity']    
+    candle['volume'] += trade['quantity'] 
+    candle['product_id'] = trade['product_id']
+       
 
     return candle
 
@@ -39,7 +42,7 @@ def transform_trade_to_ohlcv(
     kafka_input_topic:str,
     kafka_output_topic:str,
     kafka_consumer_group: str,
-    ohlcv_window_seconds = 60,
+    ohlcv_window_seconds:int,
 ):
     """reads incoming trades from the 'kafka_input_topic'
     , transforms them into OHLC data and outputs them to the 
@@ -80,11 +83,11 @@ def transform_trade_to_ohlcv(
     sdf['low'] = sdf['value']['low']
     sdf['close'] = sdf['value']['close']
     sdf['volume'] = sdf['value']['volume']
-    sdf['timestamp_ms'] = sdf['value']['timestamp_ms']
-    
+    sdf['product_id'] = sdf['value']['product_id']
+    sdf['timestamp_ms'] = sdf['end']
     
     # keep the columns we are intrested
-    sdf = sdf[['timestamp_ms', 'close', 'low', 'high', 'close', 'volume']]
+    sdf = sdf[['product_id','timestamp_ms', 'open', 'low', 'high', 'close', 'volume']]
     
     
     # print the output to the console
@@ -97,11 +100,21 @@ def transform_trade_to_ohlcv(
     
 if __name__ == '__main__':
     
+    from ohlcv_config import config
+    
+    # transform_trade_to_ohlcv(
+    #     kafka_broker_address = "localhost:19092",
+    #     kafka_input_topic = "trades",
+    #     kafka_output_topic = "olhcv",
+    #     kafka_consumer_group = "trades_to_olhcv",
+    #     ohlcv_window_seconds = 60,
+    # )
+    
     transform_trade_to_ohlcv(
-        kafka_broker_address='localhost:19092',
-        kafka_input_topic = 'trades',
-        kafka_output_topic='ohlcv',
-        kafka_consumer_group='consumer_group_trade_to_ohlcv',
-        ohlcv_window_seconds = 60,
+        kafka_broker_address = config.kafka_broker_address,
+        kafka_input_topic = config.kafka_input_topic,
+        kafka_output_topic = config.kafka_output_topic,
+        kafka_consumer_group = config.kafka_consumer_group,
+        ohlcv_window_seconds = config.ohlcv_window_seconds,
     )
             
