@@ -1,12 +1,14 @@
-from kraken_websocket_api import KrakenWebSocketAPI, Trade
 from loguru import logger
-
 from typing import List
+
+from quixstreams import Application
+
+from trade_data_source import TradeSource, Trade
 
 def produce_trades(
     kafka_broker_address: str,
     kafka_topic: str,
-    product_id: str,
+    trade_data_source: TradeSource,
     
 ):
     """
@@ -22,7 +24,6 @@ def produce_trades(
         None
     """
     
-    from quixstreams import Application
 
     # Create an Application: 
     app = Application(broker_address=kafka_broker_address)
@@ -31,16 +32,14 @@ def produce_trades(
     # Define a Topic:
     topic = app.topic(name=kafka_topic, value_serializer='json')
 
-    # Create a Kraken APi object
-    kraken_api = KrakenWebSocketAPI(product_id=product_id)
     
      # Create a Producer and Produce Messages:
 
     with app.get_producer() as producer:
         
-        while True:
+        while not trade_data_source.is_done():
                         
-            trades: List[Trade] = kraken_api.get_trades()
+            trades: List[Trade] = trade_data_source.get_trades()
             
             for trade in trades:
                 # Serialize an event using the defined topic
@@ -55,12 +54,18 @@ if __name__ == "__main__":
     
     from config import config
     
-    # print(f"product ids: {config.product_ids}")
+    from trade_data_source  import KrakenWebSocketAPI
+    
+    kraken_websocket_api = KrakenWebSocketAPI(
+        product_id=config.product_id,
+    )
+    
+    
     
     produce_trades(
         kafka_broker_address=config.kafka_broker_address, 
         kafka_topic=config.kafka_topic,
-        product_id=config.product_id,
+        trade_data_source=kraken_websocket_api,
     )
     
     

@@ -1,19 +1,25 @@
+
+from datetime import datetime, timezone
 from typing import List
-from websocket import create_connection
-from loguru import logger
 import json
+from websocket import create_connection
 
-from pydantic import BaseModel
+from loguru import logger
+
+from trade_data_source.base import TradeSource
+from trade_data_source.trade import Trade
+
+# from pydantic import BaseModel
 
 
 
-class Trade(BaseModel):
-    product_id: str
-    quantity: float
-    price: float
-    timestamp_ms: int
+# class Trade(BaseModel):
+#     product_id: str
+#     quantity: float
+#     price: float
+#     timestamp_ms: int
 
-class KrakenWebSocketAPI:
+class KrakenWebSocketAPI(TradeSource):
     """
     Class for reading real_time trades from the Kraken Websocket API
     """
@@ -67,8 +73,8 @@ class KrakenWebSocketAPI:
             trades.append(
                 Trade(
                     product_id=trade['symbol'],
-                    quantity=trade['qty'],
                     price=trade['price'],
+                    quantity=trade['qty'],
                     timestamp_ms=self.to_ms(trade['timestamp']),
                 )
             )
@@ -130,7 +136,6 @@ class KrakenWebSocketAPI:
             int: A timestamp expressed in milliseconds.
             
         """
-        from datetime import datetime, timezone
 
         timestamp = datetime.fromisoformat(timestamp[:-1]).replace(tzinfo=timezone.utc)
         return int(timestamp.timestamp()*1000)
