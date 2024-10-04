@@ -5,8 +5,16 @@ import hopsworks
 
 from src.config import hopsworks_config as config
 
+project = hopsworks.login(
+        project=config.hopsworks_project_name,
+        api_key_value=config.hopsworks_api_key,
+    )
+    
+feature_store = project.get_feature_store()
+    
+
 def push_value_to_feature_group(
-    value: dict, 
+    value: List[dict], 
     feature_group_name: str, 
     feature_group_version: int,
     feature_group_primary_keys: List[str],
@@ -17,7 +25,7 @@ def push_value_to_feature_group(
     Pushes the given "value" to the given "feature_group_name" in the feature store.
     
     Args:
-        value (dict): The value to push to the feature store.
+        value (List[dict]): The value to push to the feature store.
         feature_group_name (str): The name of the feature group to push the value to.
         feature_group_version (int): The version of the feature group to push the value to.
         feature_group_primary_key (List[str]): The primary key of the feature group to push the value to.
@@ -28,12 +36,6 @@ def push_value_to_feature_group(
         None
     """
     
-    project = hopsworks.login(
-        project=config.hopsworks_project_name,
-        api_key_value=config.hopsworks_api_key,
-    )
-    
-    feature_store = project.get_feature_store()
     
     # Get or create feature group
     feature_group = feature_store.get_or_create_feature_group(
@@ -46,7 +48,7 @@ def push_value_to_feature_group(
     )
     
     # Transform the value to a pandas dataframe
-    value_df = pd.DataFrame([value])
+    value_df = pd.DataFrame(value)
     # breakpoint()
     
     # Insert data into feature group

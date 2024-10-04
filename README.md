@@ -26,6 +26,6 @@
 
 - [x] Topic to feature store service -> a Kafka consumer
 - [ ] Start the backfill
-    - [ ] Implement a Kraken Historical data reader (trade producer)
-    - [ ] Adjust timestamps used to bucket trades into windows (trade_to_ohlcv)
+    - [x] Implement a Kraken Historical data reader (trade producer)
+    - [x] Adjust timestamps used to bucket trades into windows (trade_to_ohlcv)
     - [ ] Save historical ohlcv features in batches to the offline store (topic_to_feature_store)
