@@ -54,18 +54,26 @@ if __name__ == "__main__":
     
     from config import config
     
-    from trade_data_source  import KrakenWebSocketAPI
-    
-    kraken_websocket_api = KrakenWebSocketAPI(
-        product_id=config.product_id,
-    )
-    
-    
+    if config.live_or_historical == "live":
+        from trade_data_source  import KrakenWebSocketAPI
+        
+        kraken_api = KrakenWebSocketAPI(
+            product_id=config.product_id,
+        )
+    elif config.live_or_historical == "historical":
+        from trade_data_source  import KrakenRestAPI
+        
+        kraken_api = KrakenRestAPI(
+            product_id=config.product_id,
+            last_n_days=config.last_n_days,
+        )
+    else:
+        raise ValueError(f"Invalid value for live_or_historical: {config.live_or_historical}")
     
     produce_trades(
         kafka_broker_address=config.kafka_broker_address, 
         kafka_topic=config.kafka_topic,
-        trade_data_source=kraken_websocket_api,
+        trade_data_source=kraken_api,
     )
     
     
