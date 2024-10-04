@@ -8,6 +8,6 @@ class AppConfig(BaseSettings):
     ohlcv_window_seconds:int
     
     class Config:
-        env_file="ohlcv.env"
+        env_file=".env"
 
 config=AppConfig()

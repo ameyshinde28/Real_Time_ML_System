@@ -1,7 +1,8 @@
 from quixstreams import Application
 from loguru import logger
 from datetime import timedelta
-
+from typing import Any, Optional, List, Tuple
+# from quixstreams.types import TimestampType
 
 
 def init_ohlcv_candle(trade: dict):
@@ -36,6 +37,19 @@ def update_ohlcv_candle(candle:dict, trade: dict):
 
     return candle
 
+def custom_ts_extractor(
+    value: Any,
+    headers: Optional[List[Tuple[str, bytes]]],
+    timestamp: float,
+    timestamp_type: Optional[str] = None,
+) -> int:
+    """
+    Specifying a custom timestamp extractor to use the timestamp from the message payload 
+    instead of Kafka timestamp.
+    Extracts the timestamp from the message payload.
+    """
+    return value["timestamp_ms"]
+
 
 def transform_trade_to_ohlcv(
     kafka_broker_address: str,
@@ -62,7 +76,9 @@ def transform_trade_to_ohlcv(
         consumer_group=kafka_consumer_group,
     )
     
-    input_topic = app.topic(name=kafka_input_topic, value_deserializer='json')
+    
+    
+    input_topic = app.topic(name=kafka_input_topic, value_deserializer='json', timestamp_extractor=custom_ts_extractor)
     output_topic = app.topic(name=kafka_output_topic, value_deserializer='json')
     
     # Create a Quix Streams dataframe
@@ -100,7 +116,7 @@ def transform_trade_to_ohlcv(
     
 if __name__ == '__main__':
     
-    from ohlcv_config import config
+    from config import config
     
     # transform_trade_to_ohlcv(
     #     kafka_broker_address = "localhost:19092",
