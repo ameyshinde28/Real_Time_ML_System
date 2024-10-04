@@ -28,4 +28,4 @@
 - [ ] Start the backfill
     - [x] Implement a Kraken Historical data reader (trade producer)
     - [x] Adjust timestamps used to bucket trades into windows (trade_to_ohlcv)
-    - [ ] Save historical ohlcv features in batches to the offline store (topic_to_feature_store)
+    - [x] Save historical ohlcv features in batches to the offline store (topic_to_feature_store)
