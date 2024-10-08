@@ -1,0 +1,35 @@
+version: '3.7'
+name: backfill-pipeline
+networks:
+  redpanda_network:
+    external: true
+services:
+
+  trade_producer:
+    build:
+      context: ../services/trade_producer
+      dockerfile: Dockerfile
+    networks:
+      - redpanda_network
+    env_file:
+      - ../services/trade_producer/historical.prod.env
+
+  trade_to_ohlc:
+    build:
+      context: ../services/trade_to_ohlc
+      dockerfile: Dockerfile
+    networks:
+      - redpanda_network
+    env_file:
+      - ../services/trade_to_ohlc/historical.prod.env
+      
+  topic_to_feature_store:
+    build:
+      context: ../services/topic_to_feature_store
+      dockerfile: Dockerfile
+    networks:
+      - redpanda_network
+    env_file:
+      - ../services/topic_to_feature_store/historical.prod.env
+      - ../services/topic_to_feature_store/credentials.env
+

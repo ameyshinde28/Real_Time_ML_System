@@ -29,3 +29,11 @@
     - [x] Implement a Kraken Historical data reader (trade producer)
     - [x] Adjust timestamps used to bucket trades into windows (trade_to_ohlcv)
     - [x] Save historical ohlcv features in batches to the offline store (topic_to_feature_store)
+
+## Session 4
+
+- [ ] Dockerize our real-time feature pipeline
+- [ ] Dockerize our backfill pipeline and run it
+- [ ] Duild a functional training pipeline
+      -[ ] Implement a class to read OHLC data from the feature store
+
