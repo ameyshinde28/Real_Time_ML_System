@@ -44,11 +44,14 @@ def topic_to_feature_store(
         consumer_group=kafka_consumer_group
     )
 
+    # Create a topic object for the input topic
+    input_topic = app.topic(kafka_input_topic)
+
     batch = []
 
     # Create a consumer and start a polling loop
     with app.get_consumer() as consumer:
-        consumer.subscribe(topics=[kafka_input_topic])
+        consumer.subscribe(topics=[input_topic.name])
 
         while True:
             msg = consumer.poll(0.1)
@@ -62,9 +65,12 @@ def topic_to_feature_store(
                 continue
 
             value = msg.value()
+            logger.debug(f'Received message: {value}')
             # Do some work with the value here ...
             import json
             value = json.loads(value.decode('utf-8'))
+            
+            logger.debug(f'Received message: {value}')
             
             # Append the value to the batch of trades
             batch.append(value)
@@ -100,7 +106,7 @@ def topic_to_feature_store(
             
             
 if __name__ == '__main__':
-    from src.config import config
+    from config import config
     topic_to_feature_store(
         kafka_broker_address=config.kafka_broker_address,
         kafka_input_topic=config.kafka_input_topic,

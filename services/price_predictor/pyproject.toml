@@ -7,11 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-quixstreams = "^2.11.1"
-loguru = "^0.7.2"
-pydantic = "^2.9.2"
 hopsworks = "^3.7.0"
-kafka-python = "^2.0.2"
+pydantic-settings = "^2.5.2"
+loguru = "^0.7.2"
 
 
 [build-system]

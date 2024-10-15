@@ -32,8 +32,8 @@
 
 ## Session 4
 
-- [ ] Dockerize our real-time feature pipeline
-- [ ] Dockerize our backfill pipeline and run it
-- [ ] Duild a functional training pipeline
+- [x] Dockerize our real-time feature pipeline
+- [x] Dockerize our backfill pipeline and run it
+- [ ] Build a functional training pipeline
       -[ ] Implement a class to read OHLC data from the feature store
 
