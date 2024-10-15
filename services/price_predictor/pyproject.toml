@@ -10,6 +10,7 @@ python = ">=3.12,<3.13"
 hopsworks = "^3.7.0"
 pydantic-settings = "^2.5.2"
 loguru = "^0.7.2"
+scikit-learn = "^1.5.2"
 
 
 [build-system]

@@ -36,4 +36,5 @@
 - [x] Dockerize our backfill pipeline and run it
 - [ ] Build a functional training pipeline
       -[ ] Implement a class to read OHLC data from the feature store
+      - [ ] Buid a dummy model to predict price into the future.
 

@@ -8,6 +8,7 @@ class AppConfig(BaseSettings):
     ohlc_window_sec: int
     product_id:str
     last_n_days: int
+    forecast_steps: int
 
     class Config:
         env_file = ".env"
