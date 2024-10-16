@@ -1,9 +1,13 @@
-from src.config import HopsworksConfig
 from typing import Optional
-from sklearn.metrics import mean_absolute_error
 
+from comet_ml import Experiment
+from sklearn.metrics import mean_absolute_error
 from loguru import logger
+
+from src.config import HopsworksConfig, CometConfig
+
 def train_model(
+    comet_config: CometConfig,
     feature_view_name: str,
     feature_view_version: int,
     feature_group_name: str,
@@ -23,6 +27,15 @@ def train_model(
     Args:
     Returns:
     """
+    
+    # Create a comet experiment
+    experiment =Experiment(
+        api_key=comet_config.comet_ml_api_key,
+        project_name=comet_config.comet_project_name,
+    )
+    
+    
+    
     # Load the data from the feature store
     from src.ohlc_data_reader import OhlcDataReader
     
@@ -42,12 +55,20 @@ def train_model(
         last_n_days=last_n_days)
     
     logger.debug(f"Read {len(ohlc_data)} rows of data from the offline store")
+    experiment.log_parameter("n_raw_feature_rows", len(ohlc_data))
+    
     
     # split the data into training and testing
     logger.debug(f"Splitting the data into training and testing")
     test_size = int(len(ohlc_data) * prec_test_data)
     train_df = ohlc_data[:-test_size]
     test_df = ohlc_data[-test_size:]
+    logger.debug(f"Training data: {len(train_df)}")
+    logger.debug(f"Testing data: {len(test_df)}")
+    experiment.log_parameter("n_train_rows_before_dropna", len(train_df))
+    experiment.log_parameter("n_test_rows_before_dropna", len(test_df))
+
+    
     
     # Add a column with the target  price we want our model to predict
     train_df['target_price'] = train_df['close'].shift(-forecast_steps)
@@ -60,7 +81,9 @@ def train_model(
     logger.debug(f"Removed rows with NaN values")
     logger.debug(f"Training data after removing NaN values: {len(train_df)}")
     logger.debug(f"Testing data after removing NaN values: {len(test_df)}")
-    
+    experiment.log_parameter("n_train_rows_after_dropna", len(train_df))
+    experiment.log_parameter("n_test_rows_after_dropna", len(test_df))
+
     
     # Split the data into features and target
     X_train = train_df.drop(columns='target_price')
@@ -75,6 +98,13 @@ def train_model(
     logger.debug(f"X_test: {X_test.shape}")
     logger.debug(f"y_test: {y_test.shape}")
     
+    # Log dimensions of the features and target to Comet ML
+    experiment.log_parameter("X_train:", X_train.shape)
+    experiment.log_parameter("y_train:", y_train.shape)
+    experiment.log_parameter("X_test:", X_test.shape)
+    experiment.log_parameter("y_test:", y_test.shape)
+    
+    
     # build a model
     from src.models.current_price_baseline import CurrentPriceBaseLine
     
@@ -86,13 +116,14 @@ def train_model(
     y_pred = model.predict(X_test)
     mae = mean_absolute_error(y_test, y_pred)
     logger.debug(f"Mean absolute error: {mae}")
-    
+    experiment.log_metric("MAE", mae)
     # push model to the model registry
 
 if __name__ == "__main__":
     
-    from src.config import config, hopsworks_config
+    from src.config import config, hopsworks_config, comet_config
     train_model(
+        comet_config=comet_config,
         hopsworks_config=hopsworks_config,
         feature_view_name=config.feature_view_name,
         feature_view_version=config.feature_view_version,

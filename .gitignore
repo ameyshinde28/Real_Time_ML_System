@@ -196,3 +196,7 @@ ca.cert
 **/credentials.env
 .venv/
 certificates/
+
+**/credentials.env
+hopsworks.credentials.env
+comet.credentials.env
