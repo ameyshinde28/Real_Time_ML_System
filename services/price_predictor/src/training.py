@@ -92,6 +92,12 @@ def train_model(
     y_test = test_df['target_price']
     logger.debug(f"Split the data into features and target")
     
+    # Keep only the features that are needed for the model
+    
+    X_train = X_train[['open', 'high', 'low', 'close', 'volume']]
+    X_test = X_test[['open', 'high', 'low', 'close', 'volume']]
+    
+    
     # Log dimensions of the features and target
     logger.debug(f"X_train: {X_train.shape}")
     logger.debug(f"y_train: {y_train.shape}")
@@ -116,8 +122,35 @@ def train_model(
     y_pred = model.predict(X_test)
     mae = mean_absolute_error(y_test, y_pred)
     logger.debug(f"Mean absolute error: {mae}")
-    experiment.log_metric("MAE", mae)
+    experiment.log_metric("MAE_CurrentPriceBaseline", mae)
+    
+    # compute mae on the training  data for debugging purpose
+    y_train_pred = model.predict(X_train)
+    mae_train = mean_absolute_error(y_train, y_train_pred)
+    logger.debug(f"Mean absolute error on the training data of CurrentPriceBaseline: {mae_train}")
+    experiment.log_metric("mae_training_CurrentPriceBaseline", mae_train)
+    
+    # breakpoint()
+    # train an XGBoost model
+    from xgboost import XGBRegressor
+    xgb_model = XGBRegressor()
+    xgb_model.fit(X_train, y_train)
+    y_pred = xgb_model.predict(X_test)
+    mae = mean_absolute_error(y_test, y_pred)
+    logger.debug(f"Mean Absolute Error: {mae}")
+    experiment.log_metric("mae_XGBRegressor", mae)
+    
+    # compute mae on the training  data for debugging purpose
+    y_train_pred = xgb_model.predict(X_train)
+    mae_train = mean_absolute_error(y_train, y_train_pred)
+    logger.debug(f"Mean absolute error on the training data of XGBRegressor model: {mae_train}")
+    experiment.log_metric("mae_training_XGBRegressor model", mae_train)
+    
+    
+ 
     # push model to the model registry
+    
+    experiment.end()
 
 if __name__ == "__main__":
     
