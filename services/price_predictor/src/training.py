@@ -5,6 +5,7 @@ from sklearn.metrics import mean_absolute_error
 from loguru import logger
 
 from src.config import HopsworksConfig, CometConfig
+from src.feature_engineering import add_technical_indicators
 
 def train_model(
     comet_config: CometConfig,
@@ -104,12 +105,53 @@ def train_model(
     logger.debug(f"X_test: {X_test.shape}")
     logger.debug(f"y_test: {y_test.shape}")
     
+    # add technical indicator to the features
+    X_train = add_technical_indicators(X_train)
+    X_test = add_technical_indicators(X_test)
+    logger.debug(f"Add technical indicator to the features")
+    logger.debug(f"X_train: {X_train.columns}")
+    logger.debug(f"X_test: {X_test.columns}")
+    experiment.log_parameter("features", X_train.columns.tolist())
+    
+    # Dropping rows with NaN values
+    # Extract nan row train
+    nan_rows_train = X_train.isna().any(axis=1)
+    # Count nan rows train
+    logger.debug(f"Number of Nan rows in X_train: {nan_rows_train.sum()}")
+    # Keep only non nan rows train
+    X_train = X_train.loc[~nan_rows_train]
+    y_train = y_train.loc[~nan_rows_train]
+    
+    # Extract nan rows test
+    nan_rows_test = X_test.isna().any(axis=1)
+    # Count nan rows test
+    logger.debug(f"Number of Nan rows in X_train: {nan_rows_test.sum()}")
+    # Keep only non nan rows test
+    X_test = X_test.loc[~nan_rows_test]
+    y_test = y_test.loc[~nan_rows_test]
+ 
+    # Percentage of dropped rows
+    experiment.log_parameter("n_nan_rows_train", nan_rows_train.sum())
+    experiment.log_parameter("n_nan_rows_test", nan_rows_test.sum())
+    experiment.log_parameter("perc_dropped_rows_train", nan_rows_train.sum() / len(X_train) * 100)
+    experiment.log_parameter("perc_dropped_rows_test", nan_rows_test.sum() / len(X_test) * 100)
+    
+    # X_train=X_train.dropna()
+    # X_test=X_test.dropna()
+    
+    # Log dimensions of the features and target
+    logger.debug(f"X_train: {X_train.shape}")
+    logger.debug(f"y_train: {y_train.shape}")
+    logger.debug(f"X_test: {X_test.shape}")
+    logger.debug(f"y_test: {y_test.shape}")
+
     # Log dimensions of the features and target to Comet ML
     experiment.log_parameter("X_train:", X_train.shape)
     experiment.log_parameter("y_train:", y_train.shape)
     experiment.log_parameter("X_test:", X_test.shape)
     experiment.log_parameter("y_test:", y_test.shape)
     
+    # breakpoint()
     
     # build a model
     from src.models.current_price_baseline import CurrentPriceBaseLine
