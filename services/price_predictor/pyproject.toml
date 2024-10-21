@@ -14,6 +14,7 @@ scikit-learn = "^1.5.2"
 comet-ml = "^3.47.0"
 xgboost = "^2.1.1"
 ta-lib = "^0.4.32"
+optuna = "^4.0.0"
 
 
 [build-system]

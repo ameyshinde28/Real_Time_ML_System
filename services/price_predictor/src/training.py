@@ -3,9 +3,14 @@ from typing import Optional
 from comet_ml import Experiment
 from sklearn.metrics import mean_absolute_error
 from loguru import logger
+import hashlib
 
 from src.config import HopsworksConfig, CometConfig
 from src.feature_engineering import add_technical_indicators
+from src.models.current_price_baseline import CurrentPriceBaseLine
+from src.models.xgboost_model import XGBoostModel
+from src.utils import hash_dataframe
+
 
 def train_model(
     comet_config: CometConfig,
@@ -18,15 +23,27 @@ def train_model(
     last_n_days:int,
     hopsworks_config: HopsworksConfig,
     forecast_steps: int,
-    prec_test_data: Optional[float] = 0.3
+    prec_test_data: Optional[float] = 0.3,
+    n_search_trials: Optional[int] = 10,
+    n_splits: Optional[int] = 3,
     
 ):
-    """
-    Read data from the feature store
-    Trains a predictive model
-    Saves the model to the model registry
+    """_summary_
+
     Args:
-    Returns:
+        comet_config (CometConfig): _description_
+        feature_view_name (str): _description_
+        feature_view_version (int): _description_
+        feature_group_name (str): _description_
+        feature_group_version (int): _description_
+        ohlc_window_sec (int): _description_
+        product_id (str): _description_
+        last_n_days (int): _description_
+        hopsworks_config (HopsworksConfig): _description_
+        forecast_steps (int): _description_
+        prec_test_data (Optional[float], optional): _description_. Defaults to 0.3.
+        n_search_trials (Optional[int], optional): _description_. Defaults to 10.
+        n_splits (Optional[int], optional): _description_. Defaults to 3.
     """
     
     # Create a comet experiment
@@ -35,7 +52,10 @@ def train_model(
         project_name=comet_config.comet_project_name,
     )
     
-    
+    experiment.log_parameter("last_n_days", last_n_days)
+    experiment.log_parameter("forecast_steps", forecast_steps)
+    experiment.log_parameter("n_search_trials", n_search_trials)
+    experiment.log_parameter("n_splits", n_splits)
     
     # Load the data from the feature store
     from src.ohlc_data_reader import OhlcDataReader
@@ -58,6 +78,9 @@ def train_model(
     logger.debug(f"Read {len(ohlc_data)} rows of data from the offline store")
     experiment.log_parameter("n_raw_feature_rows", len(ohlc_data))
     
+    # log a hsah of the dataset to comet
+    dataset_hash = hash_dataframe(ohlc_data)
+    experiment.log_parameter("ohlc_data_hash", dataset_hash)
     
     # split the data into training and testing
     logger.debug(f"Splitting the data into training and testing")
@@ -154,7 +177,7 @@ def train_model(
     # breakpoint()
     
     # build a model
-    from src.models.current_price_baseline import CurrentPriceBaseLine
+    
     
     model = CurrentPriceBaseLine()
     model.fit(X_train, y_train)
@@ -174,9 +197,8 @@ def train_model(
     
     # breakpoint()
     # train an XGBoost model
-    from xgboost import XGBRegressor
-    xgb_model = XGBRegressor()
-    xgb_model.fit(X_train, y_train)
+    xgb_model = XGBoostModel()
+    xgb_model.fit(X_train, y_train, n_search_trials=n_search_trials, n_splits=n_splits)
     y_pred = xgb_model.predict(X_test)
     mae = mean_absolute_error(y_test, y_pred)
     logger.debug(f"Mean Absolute Error: {mae}")
@@ -208,4 +230,6 @@ if __name__ == "__main__":
         product_id=config.product_id,
         last_n_days=config.last_n_days,
         forecast_steps=config.forecast_steps,
+        n_search_trials=config.n_search_trials,
+        n_splits=config.n_splits,
     )
