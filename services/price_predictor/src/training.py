@@ -3,7 +3,8 @@ from typing import Optional
 from comet_ml import Experiment
 from sklearn.metrics import mean_absolute_error
 from loguru import logger
-import hashlib
+import joblib
+import os
 
 from src.config import HopsworksConfig, CometConfig
 from src.feature_engineering import add_technical_indicators
@@ -213,6 +214,31 @@ def train_model(
     
  
     # push model to the model registry
+    
+    model_name = f"price_predictor_{product_id.replace('/','_')}_{ohlc_window_sec}s_{forecast_steps}steps"
+    local_model_path = f"{model_name}.joblib"
+    joblib.dump(xgb_model.get_model_obj(), local_model_path)
+   
+   # Log the model  to comet ml
+    experiment.log_model(
+        name=model_name,
+        file_or_folder=local_model_path,
+        overwrite=True,
+        # model_framework="xgboost",
+        # model_format="joblib"
+    )
+    
+    # Register the model in  Comet ML
+    registered_model = experiment.register_model(
+        model_name=model_name,
+        # overwrite=True,
+        
+    )
+    
+    logger.info(f"Model registered in Comet ML: {model_name}")
+    
+    # Clean up the local model file
+    os.remove(local_model_path)
     
     experiment.end()
 

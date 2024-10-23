@@ -118,3 +118,7 @@ class XGBoostModel:
         
         # we return the best hyperparameters
         return study.best_trial.params
+    
+    
+    def get_model_obj(self):
+        return self.model
