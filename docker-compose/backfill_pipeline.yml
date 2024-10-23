@@ -16,7 +16,7 @@ services:
       - KAFKA_TOPIC=trade_historical
       - PRODUCT_ID=ETH/USD
       - LIVE_OR_HISTORICAL=historical
-      - LAST_N_DAYS=90
+      - LAST_N_DAYS=120
     # env_file:
     #   - ../services/trade_producer/historical.prod.env
 
