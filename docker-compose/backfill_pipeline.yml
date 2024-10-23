@@ -11,8 +11,14 @@ services:
       dockerfile: Dockerfile
     networks:
       - redpanda_network
-    env_file:
-      - ../services/trade_producer/historical.prod.env
+    environment:
+      - KAFKA_BROKER_ADDRESS=redpanda:9092
+      - KAFKA_TOPIC=trade_historical
+      - PRODUCT_ID=ETH/USD
+      - LIVE_OR_HISTORICAL=historical
+      - LAST_N_DAYS=90
+    # env_file:
+    #   - ../services/trade_producer/historical.prod.env
 
   trade_to_ohlc:
     build:
