@@ -189,6 +189,7 @@ def train_model(
     mae = mean_absolute_error(y_test, y_pred)
     logger.debug(f"Mean absolute error: {mae}")
     experiment.log_metric("MAE_CurrentPriceBaseline", mae)
+    mae_baseline = mae
     
     # compute mae on the training  data for debugging purpose
     y_train_pred = model.predict(X_train)
@@ -201,6 +202,8 @@ def train_model(
     xgb_model = XGBoostModel()
     xgb_model.fit(X_train, y_train, n_search_trials=n_search_trials, n_splits=n_splits)
     y_pred = xgb_model.predict(X_test)
+    
+    # Compute on test data
     mae = mean_absolute_error(y_test, y_pred)
     logger.debug(f"Mean Absolute Error: {mae}")
     experiment.log_metric("mae_XGBRegressor", mae)
@@ -228,14 +231,16 @@ def train_model(
         # model_format="joblib"
     )
     
-    # Register the model in  Comet ML
-    registered_model = experiment.register_model(
-        model_name=model_name,
-        # overwrite=True,
-        
-    )
-    
-    logger.info(f"Model registered in Comet ML: {model_name}")
+    if mae < mae_baseline:
+        logger.info(f"Model {model_name} is better than the baseline model. Pushing to Model Registry")
+        # Register the model in  Comet ML
+        registered_model = experiment.register_model(
+            model_name=model_name,
+            # overwrite=True,
+            
+        )
+    else:
+        logger.info(f"Model {model_name} is not better than the baseline model. Not pushing to Model Registry")
     
     # Clean up the local model file
     os.remove(local_model_path)
