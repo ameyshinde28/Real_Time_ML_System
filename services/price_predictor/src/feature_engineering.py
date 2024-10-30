@@ -1,7 +1,29 @@
 import pandas as pd
 import talib
 
+def add_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds temporal features to the Datafeame
+    Args:
+        df (pd.DataFrame): the imput is expectected to have the folowing columns:
+        -'timestamp_ms'
+    
 
+    Returns:
+        pd.DataFrame: The dataframe with the orignal features and the new temporal features
+
+        The output dataframe will have the following extra columns:
+        - 'hour'
+        - 'day'
+        - 'month'
+    """
+
+    df['hour'] = pd.to_datetime(df['timestamp_ms'], unit='ms').dt.hour
+    df['day'] = pd.to_datetime(df['timestamp_ms'], unit='ms').dt.day
+    df['month'] = pd.to_datetime(df['timestamp_ms'], unit='ms').dt.month
+    df['weekday'] = pd.to_datetime(df['timestamp_ms'], unit='ms').dt.weekday
+
+    return df
 def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     """
     Add technical indicators to the DataFrame.
