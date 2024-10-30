@@ -7,10 +7,7 @@ import joblib
 import os
 
 from src.config import HopsworksConfig, CometConfig
-from src.feature_engineering import (
-    add_technical_indicators,
-    add_temporal_features,
-    )
+from src.feature_engineering import add_technical_indicators_and_temporal_features
 from src.models.current_price_baseline import CurrentPriceBaseLine
 from src.models.xgboost_model import XGBoostModel
 from src.utils import hash_dataframe
@@ -122,8 +119,8 @@ def train_model(
     
     # Keep only the features that are needed for the model
     
-    X_train = X_train[['open', 'high', 'low', 'close', 'volume']]
-    X_test = X_test[['open', 'high', 'low', 'close', 'volume']]
+    X_train = X_train[['open', 'high', 'low', 'close', 'volume', 'timestamp_ms']]
+    X_test = X_test[['open', 'high', 'low', 'close', 'volume', 'timestamp_ms']]
     
     
     # Log dimensions of the features and target
@@ -132,24 +129,16 @@ def train_model(
     logger.debug(f"X_test: {X_test.shape}")
     logger.debug(f"y_test: {y_test.shape}")
     
-    # add technical indicator to the features
-    X_train = add_technical_indicators(X_train)
-    X_test = add_technical_indicators(X_test)
-    logger.debug(f"Add technical indicator to the features")
-    logger.debug(f"X_train: {X_train.columns}")
-    logger.debug(f"X_test: {X_test.columns}")
-    experiment.log_parameter("features", X_train.columns.tolist())
-    
-    # add temporal featuress from the timestamp_ms column
-    X_train = add_temporal_features(X_train)
-    X_test = add_temporal_features(X_test)
-    logger.debug(f"Add temporal_features to the features from the timestamp_ms column")
+    # add technical indicator and temporal features to the features dataframe
+    X_train = add_technical_indicators_and_temporal_features(X_train)
+    X_test = add_technical_indicators_and_temporal_features(X_test)
+    logger.debug(f"Add technical indicator and temporal features to the features dataframe")
     logger.debug(f"X_train: {X_train.columns}")
     logger.debug(f"X_test: {X_test.columns}")
     experiment.log_parameter("features", X_train.columns.tolist())
     experiment.log_parameter("n_features", len(X_train.columns))
 
-
+    
     # Dropping rows with NaN values
     # Extract nan row train
     nan_rows_train = X_train.isna().any(axis=1)
