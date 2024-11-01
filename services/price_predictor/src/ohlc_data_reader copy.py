@@ -1,23 +1,24 @@
 import os
-from typing import List, Optional, Tuple, Dict, Any
 import time
+from typing import Any, Dict, List, Optional
 
-from loguru import logger
-import pandas as pd
 import hopsworks
-from hsfs.feature_view import FeatureView
+import pandas as pd
 from hsfs.feature_store import FeatureStore
-
+from hsfs.feature_view import FeatureView
+from loguru import logger
 from src.config import HopsworksConfig
+
 
 class OhlcDataReader:
     """
     A class to help us read our OHLC data from the feature store.
-    
+
     The Hopsworks credentials are read from the environment variables.
     - HOPSWORKS_PROJECT_NAME
     - HOPSWORKS_API_KEY
     """
+
     def __init__(
         self,
         ohlc_window_sec: int,
@@ -26,15 +27,15 @@ class OhlcDataReader:
         feature_view_version: int,
         feature_group_name: Optional[str] = None,
         feature_group_version: Optional[int] = None,
+        
     ):
         self.ohlc_window_sec = ohlc_window_sec
         self.feature_view_name = feature_view_name
         self.feature_view_version = feature_view_version
         self.feature_group_name = feature_group_name
         self.feature_group_version = feature_group_version
-
         self._fs = self._get_feature_store(hopsworks_config)
-    
+
     def _get_primary_keys_to_read_from_online_store(
         self,
         product_id: str,
@@ -59,11 +60,12 @@ class OhlcDataReader:
             {
                 'product_id': product_id,
                 'timestamp_ms': timestamp,
-            } for timestamp in timestamp_keys
+            }
+            for timestamp in timestamp_keys
         ]
-        
+
         return primary_keys
-    
+
     def read_from_online_store(
         self,
         product_id: str,
@@ -91,8 +93,7 @@ class OhlcDataReader:
 
         feature_view = self._get_feature_view()
         features = feature_view.get_feature_vectors(
-            entry=primary_keys,
-            return_type="pandas"
+            entry=primary_keys, return_type='pandas'
         )
 
         # features.sort_values(by='timestamp', inplace=True)
@@ -119,15 +120,19 @@ class OhlcDataReader:
 
         Returns:
             List[int]: The list of timestamps we will use to read the OHLC data.
-        """        
+        """
         to_timestamp_ms = int(time.time() * 1000)
         to_timestamp_ms -= to_timestamp_ms % 60000
 
         n_candles_per_minutes = 60 // self.ohlc_window_sec
+        print("last_n_minutes:", last_n_minutes, "Type:", type(last_n_minutes))
+        print("n_candles_per_minutes:", n_candles_per_minutes, "Type:", type(n_candles_per_minutes))
 
-        timestamps = [to_timestamp_ms - i * self.ohlc_window_sec * 1000 \
-                      for i in range(last_n_minutes * n_candles_per_minutes)]
-        
+        timestamps = [
+            to_timestamp_ms - i * self.ohlc_window_sec * 1000
+            for i in range(last_n_minutes * n_candles_per_minutes)
+        ]
+
         return timestamps
 
     def _get_feature_view(self) -> FeatureView:
@@ -143,11 +148,11 @@ class OhlcDataReader:
                     name=self.feature_view_name,
                     version=self.feature_view_version,
                 )
-            except Exception as e:
+            except Exception:
                 raise ValueError(
                     'The feature group name and version must be provided if the feature view does not exist.'
                 )
-        
+
         # We have the feature group info, so we first get it
         feature_group = self._fs.get_feature_group(
             name=self.feature_group_name,
@@ -163,17 +168,20 @@ class OhlcDataReader:
         # and if it already existed, we check that its feature group name and version match
         # the ones we have in `self.feature_group_name` and `self.feature_group_version`
         # otherwise we raise an error
-        possibly_different_feature_group = \
+        possibly_different_feature_group = (
             feature_view.get_parent_feature_groups().accessible[0]
-        
-        if possibly_different_feature_group.name != feature_group.name or \
-            possibly_different_feature_group.version != feature_group.version:
+        )
+
+        if (
+            possibly_different_feature_group.name != feature_group.name
+            or possibly_different_feature_group.version != feature_group.version
+        ):
             raise ValueError(
                 'The feature view and feature group names and versions do not match.'
             )
-        
+
         return feature_view
-        
+
     def read_from_offline_store(
         self,
         product_id: str,
@@ -186,7 +194,7 @@ class OhlcDataReader:
         """
         to_timestamp_ms = int(time.time() * 1000)
         from_timestamp_ms = to_timestamp_ms - last_n_days * 24 * 60 * 60 * 1000
-        
+
         feature_view = self._get_feature_view()
         features = feature_view.get_batch_data()
 
@@ -196,7 +204,7 @@ class OhlcDataReader:
         features = features[features['timestamp_ms'] <= to_timestamp_ms]
         # sort the features by timestamp (ascending)
         features = features.sort_values(by='timestamp_ms').reset_index(drop=True)
-        
+
         # breakpoint()
 
         return features
@@ -215,13 +223,15 @@ class OhlcDataReader:
 
 
 if __name__ == '__main__':
-
+    from src.config import hopsworks_config, config
+    
     ohlc_data_reader = OhlcDataReader(
         feature_view_name='ohlc_feature_view',
         feature_view_version=10,
         feature_group_name='ohlc_feature_group',
         feature_group_version=3,
-        ohlc_window_sec=60
+        ohlc_window_sec=60,
+        hopsworks_config=hopsworks_config,
     )
 
     # check if reading from the online store works

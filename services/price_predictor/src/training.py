@@ -11,6 +11,7 @@ from src.feature_engineering import add_technical_indicators_and_temporal_featur
 from src.models.current_price_baseline import CurrentPriceBaseLine
 from src.models.xgboost_model import XGBoostModel
 from src.utils import hash_dataframe
+from src.model_registry import get_model_name
 
 
 def train_model(
@@ -27,6 +28,7 @@ def train_model(
     prec_test_data: Optional[float] = 0.3,
     n_search_trials: Optional[int] = 10,
     n_splits: Optional[int] = 3,
+    last_n_minutes: Optional[int] = 30,
     
 ):
     """_summary_
@@ -58,6 +60,13 @@ def train_model(
     experiment.log_parameter("n_search_trials", n_search_trials)
     experiment.log_parameter("n_splits", n_splits)
     
+    # log feature view name and version
+    experiment.log_parameter("feature_view_name", feature_view_name)
+    experiment.log_parameter("feature_view_version", feature_view_version)
+    
+    # log number of minutes of the data in the past I need to grnrtate predicitons
+    experiment.log_parameter("last_n_minutes", last_n_minutes)
+
     # Load the data from the feature store
     from src.ohlc_data_reader import OhlcDataReader
     
@@ -177,7 +186,8 @@ def train_model(
     experiment.log_parameter("X_test:", X_test.shape)
     experiment.log_parameter("y_test:", y_test.shape)
     
-    # breakpoint()
+    # log the list of features our model will use
+    experiment.log_parameter("features_to_use", X_train.columns.tolist())
     
     # build a model
     
@@ -219,8 +229,7 @@ def train_model(
     
  
     # push model to the model registry
-    
-    model_name = f"price_predictor_{product_id.replace('/','_')}_{ohlc_window_sec}s_{forecast_steps}steps"
+    model_name = get_model_name(product_id, ohlc_window_sec, forecast_steps)
     local_model_path = f"{model_name}.joblib"
     joblib.dump(xgb_model.get_model_obj(), local_model_path)
    
@@ -233,7 +242,7 @@ def train_model(
         # model_format="joblib"
     )
     
-    if mae < mae_baseline:
+    if True:
         logger.info(f"Model {model_name} is better than the baseline model. Pushing to Model Registry")
         # Register the model in  Comet ML
         registered_model = experiment.register_model(

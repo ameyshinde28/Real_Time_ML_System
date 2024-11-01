@@ -11,6 +11,8 @@ class AppConfig(BaseSettings):
     forecast_steps: int
     n_search_trials: int
     n_splits: int
+    last_n_minutes: int
+    model_status: str
 
     class Config:
         env_file = ".env"
@@ -26,6 +28,7 @@ class HopsworksConfig(BaseSettings):
 class CometConfig(BaseSettings):
     comet_ml_api_key: str
     comet_project_name: str
+    comet_workspace: str
 
     class Config:
         env_file = "comet.credentials.env"
