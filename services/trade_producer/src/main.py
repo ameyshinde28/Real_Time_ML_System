@@ -58,13 +58,13 @@ if __name__ == "__main__":
         from trade_data_source  import KrakenWebSocketAPI
         
         kraken_api = KrakenWebSocketAPI(
-            product_id=config.product_id,
+            product_ids=config.product_ids,
         )
     elif config.live_or_historical == "historical":
         from trade_data_source  import KrakenRestAPI
         
         kraken_api = KrakenRestAPI(
-            product_id=config.product_id,
+            product_ids=config.product_ids,
             last_n_days=config.last_n_days,
         )
     else:

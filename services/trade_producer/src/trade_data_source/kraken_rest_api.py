@@ -8,7 +8,44 @@ import requests
 
 from trade_data_source.base import TradeSource, Trade
 
+
 class KrakenRestAPI(TradeSource):
+
+    def __init__(
+        self,
+        product_ids: list[str],
+        last_n_days: int,
+        cache_dir: Optional[str] = None,
+    )->None:
+
+        # initialize a KrakenRestApi for singl product
+        self.kraken_rest_api_single_product = [
+            KrakenRestAPISingleProduct(product_id, last_n_days, cache_dir)
+            for product_id in product_ids
+        ]
+
+    def get_trades(self) -> List[Trade]:
+
+
+        # trades=[]
+        # for api in self.kraken_rest_api_single_product:
+        #     trades += api.get_trades()
+        # return trades
+        return [trade for product_id in self.kraken_rest_api_single_product for trade in product_id.get_trades()]
+
+
+    def is_done(self):
+
+        for api in self.kraken_rest_api_single_product:
+            if not api.is_done():
+                return False
+            
+        return True
+
+        # return all(api.is_done() for api in self.kraken_rest_api_single_product)
+
+
+class KrakenRestAPISingleProduct(TradeSource):
 
     URL = 'https://api.kraken.com/0/public/Trades?pair={product_id}&since={since_sec}'
 

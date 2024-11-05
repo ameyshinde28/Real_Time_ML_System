@@ -27,15 +27,15 @@ class KrakenWebSocketAPI(TradeSource):
     
     
     
-    def __init__(self, product_id: str):
+    def __init__(self, product_ids: list[str]):
         """
         Initializes the KrakenWebsocketAPI instance
 
         Args:
-            product_id (str): The ptoduct id to get the trades from Kraken WebsocketAPI
+            product_ids (str): The ptoduct id to get the trades from Kraken WebsocketAPI
         """
 
-        self.product_id = product_id
+        self.product_ids: list[str] = product_ids
         
         # establish connection to the Kraken websocket API
         self._ws = create_connection(self.URL)
@@ -43,7 +43,7 @@ class KrakenWebSocketAPI(TradeSource):
         
         # Subscribe to the trades for the given "product_id"
        
-        self._subscribe(product_id)
+        self._subscribe(product_ids)
         
     def get_trades(self) -> List[Trade]:
         """
@@ -52,7 +52,7 @@ class KrakenWebSocketAPI(TradeSource):
         """
         
         message = self._ws.recv()
-        
+
         if 'heartbeat' in message:
             # when I get a heartbeat, I return an empty list
             logger.debug('Heartbeat Received')
@@ -63,7 +63,7 @@ class KrakenWebSocketAPI(TradeSource):
         
         # extract trades from the message['data'] field
         trades = []
-        for trade in message['data']:
+        for trade in message["data"]:
             # extract the following fields:
             # -product id
             # -price
@@ -90,7 +90,7 @@ class KrakenWebSocketAPI(TradeSource):
     
     
 
-    def _subscribe(self, product_id: str):
+    def _subscribe(self, product_ids: list[str]):
         """
         Establish connection to the Kraken websocket API and subscribe to the trades for the given 'product_id
 
@@ -98,7 +98,7 @@ class KrakenWebSocketAPI(TradeSource):
             product_ids (List[str]): symbol of the product that we want to subscribe
             
         """
-        logger.info(f"Subscribing to trades for {product_id}")
+        logger.info(f"Subscribing to trades for {product_ids}")
         # logger.info(f"Subscribing to trades for {product_ids}")
         
         # Let's subscribe to the trades for the given 'product_id'
@@ -108,18 +108,18 @@ class KrakenWebSocketAPI(TradeSource):
             "method": "subscribe",
             "params": {
                 "channel": "trade",
-                "symbol": [product_id],
+                "symbol": product_ids,
                 "snapshot": False,
                 },
             }
         self._ws.send(json.dumps(msg))
-        logger.info(f'Subscription for {product_id} worked!')
+        logger.info(f'Subscription for {product_ids} worked!')
     
         # For each product_id we dump
         # The first 2 messages we get from the websocket, because they contain
         # no trade data, just confirmation on their end that the subscription was successful
     
-        for product_id in [product_id]:
+        for product_id in product_ids:
             _ = self._ws.recv()
             _ = self._ws.recv()
             
