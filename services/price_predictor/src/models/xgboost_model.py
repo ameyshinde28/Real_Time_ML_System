@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from typing import Optional
 
 from loguru import logger
@@ -122,3 +123,5 @@ class XGBoostModel:
     
     def get_model_obj(self):
         return self.model
+=======
+>>>>>>> fix-backfill

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 version: '3.7'
 name: backfill-pipeline
 networks:
@@ -40,3 +41,5 @@ services:
       - ../services/topic_to_feature_store/historical.prod.env
       - ../services/topic_to_feature_store/credentials.env
 
+=======
+>>>>>>> fix-backfill
