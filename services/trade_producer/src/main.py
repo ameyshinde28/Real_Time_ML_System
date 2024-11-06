@@ -1,14 +1,15 @@
 from loguru import logger
-from typing import List
+from typing import List, Optional
 
 from quixstreams import Application
-
+from quixstreams.models import TopicConfig
 from trade_data_source import TradeSource, Trade
 
 def produce_trades(
     kafka_broker_address: str,
     kafka_topic: str,
     trade_data_source: TradeSource,
+    num_partitions: int,
     
 ):
     """
@@ -30,7 +31,13 @@ def produce_trades(
     
     
     # Define a Topic:
-    topic = app.topic(name=kafka_topic, value_serializer='json')
+    topic = app.topic(
+        name=kafka_topic, 
+        value_serializer='json',
+        config=TopicConfig(
+            num_partitions=num_partitions, 
+            replication_factor=1)
+            )
 
     
      # Create a Producer and Produce Messages:
@@ -44,12 +51,14 @@ def produce_trades(
             for trade in trades:
                 # Serialize an event using the defined topic
                 # Transform it into a sequence of bytes
-                message = topic.serialize(key=trade.product_id, value=trade.model_dump())                
+                message = topic.serialize(
+                    key=trade.product_id.replace('/', '-'), 
+                    value=trade.model_dump())                
                 # Produce a message into the Kafka topic
                 producer.produce(topic=topic.name, value=message.value, key=message.key)
                 logger.debug(f"Pushed to Kafka: {trade}")
                 
-
+            # breakpoint()
 if __name__ == "__main__":
     
     from config import config
@@ -74,6 +83,9 @@ if __name__ == "__main__":
         kafka_broker_address=config.kafka_broker_address, 
         kafka_topic=config.kafka_topic,
         trade_data_source=kraken_api,
+        # num_partitions=config.num_partitions,
+        # replication_factor=config.replication_factor,
+        num_partitions=len(config.product_ids),
     )
     
     

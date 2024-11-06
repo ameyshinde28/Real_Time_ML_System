@@ -74,6 +74,7 @@ def transform_trade_to_ohlcv(
     app = Application(
         broker_address=kafka_broker_address,
         consumer_group=kafka_consumer_group,
+        # auto_offset_reset='earliest',
     )
     
     
@@ -87,7 +88,8 @@ def transform_trade_to_ohlcv(
     # sdf.update(logger.debug)
     
     
-    sdf = (sdf.tumbling_window(duration_ms=timedelta(seconds=ohlcv_window_seconds))
+    sdf = (
+        sdf.tumbling_window(duration_ms=timedelta(seconds=ohlcv_window_seconds))
     .reduce(reducer=update_ohlcv_candle, initializer=init_ohlcv_candle)
     .final()
     # .current()

@@ -47,7 +47,7 @@ class KrakenRestAPI(TradeSource):
 
 class KrakenRestAPISingleProduct(TradeSource):
 
-    URL = 'https://api.kraken.com/0/public/Trades?pair={product_id}&since={since_sec}'
+    URL = 'https://api.kraken.com/0/public/Trades?pair={product_id}&since={since_sec}&count=1000'
 
     def __init__(
         self,
