@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 version: '3.7'
 name: backfill-pipeline
 networks:
@@ -12,14 +11,14 @@ services:
       dockerfile: Dockerfile
     networks:
       - redpanda_network
-    environment:
-      - KAFKA_BROKER_ADDRESS=redpanda:9092
-      - KAFKA_TOPIC=trade_historical
-      - PRODUCT_IDS=["BTC/EUR","ETH/EUR"]
-      - LIVE_OR_HISTORICAL=historical
-      - LAST_N_DAYS=120
-    # env_file:
-    #   - ../services/trade_producer/historical.prod.env
+    # environment:
+      # - KAFKA_BROKER_ADDRESS=redpanda:9092
+      # - KAFKA_TOPIC=trade_historical
+      # - PRODUCT_IDS=["BTC/EUR","ETH/EUR"]
+      # - LIVE_OR_HISTORICAL=historical
+      # - LAST_N_DAYS=120
+    env_file:
+      - ../services/trade_producer/historical.prod.env
 
   trade_to_ohlc:
     build:
@@ -41,5 +40,3 @@ services:
       - ../services/topic_to_feature_store/historical.prod.env
       - ../services/topic_to_feature_store/credentials.env
 
-=======
->>>>>>> fix-backfill
