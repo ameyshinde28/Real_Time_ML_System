@@ -34,8 +34,8 @@ services:
       - OHLCV_WINDOW_SECONDS=60
     # env_file:
       # - ../services/trade_to_ohlc/historical.prod.env
-    # deploy:
-    #   replicas: 3
+    deploy:
+      replicas: 3
       
   topic_to_feature_store:
     build:
