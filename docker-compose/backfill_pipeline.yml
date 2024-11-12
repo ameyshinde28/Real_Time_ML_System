@@ -36,7 +36,7 @@ services:
       # - ../services/trade_to_ohlc/historical.prod.env
     # deploy:
     #   replicas: 3
-
+      
   topic_to_feature_store:
     build:
       context: ../services/topic_to_feature_store
