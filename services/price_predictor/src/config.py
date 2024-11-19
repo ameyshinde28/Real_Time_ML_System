@@ -12,7 +12,8 @@ class AppConfig(BaseSettings):
     n_search_trials: int
     n_splits: int
     last_n_minutes: int
-    model_status: str
+    ml_model_status: str
+    api_supported_product_ids: list[str]
 
     class Config:
         env_file = ".env"

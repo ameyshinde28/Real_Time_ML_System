@@ -217,7 +217,7 @@ def add_technical_indicators_momentum(df: pd.DataFrame) -> pd.DataFrame:
     df['StochRSI_K'], df['StochRSI_D'] = talib.STOCHRSI(df['close'], timeperiod=14, fastk_period=5, fastd_period=3, fastd_matype=0)
 
     # 28. TRIX
-    df['TRIX'] = talib.TRIX(df['close'], timeperiod=14)
+    # df['TRIX'] = talib.TRIX(df['close'], timeperiod=14)
 
     # 29. ULTOSC
     df['ULTOSC'] = talib.ULTOSC(df['high'], df['low'], df['close'], timeperiod1=7, timeperiod2=14, timeperiod3=28)
@@ -304,7 +304,7 @@ def add_technical_indicators_overlap_studies(df: pd.DataFrame) -> pd.DataFrame:
     df['BB_Lower'] = lower
     
     # 2. DEMA
-    df['DEMA'] = talib.DEMA(df['close'], timeperiod=30)
+    # df['DEMA'] = talib.DEMA(df['close'], timeperiod=30)
 
     # 3. EMA
     # df['EMA'] = talib.EMA(df['close'], timeperiod=30)
@@ -313,27 +313,27 @@ def add_technical_indicators_overlap_studies(df: pd.DataFrame) -> pd.DataFrame:
     df['EMA_28'] = talib.EMA(df['close'], timeperiod=28)
 
     # 4. HT_TRENDLINE
-    df['HT_TRENDLINE'] = talib.HT_TRENDLINE(df['close'])
+    # df['HT_TRENDLINE'] = talib.HT_TRENDLINE(df['close'])
 
     # 5. KAMA
-    df['KAMA'] = talib.KAMA(df['close'], timeperiod=30)
+    # df['KAMA'] = talib.KAMA(df['close'], timeperiod=30)
 
     # 6. MA
-    df['MA'] = talib.MA(df['close'], timeperiod=30)
+    df['MA'] = talib.MA(df['close'], timeperiod=28)
 
     # 7. MAMA
-    mama, fama = talib.MAMA(df['close'])
-    df['MAMA'] = mama
-    df['FAMA'] = fama
+    # mama, fama = talib.MAMA(df['close'])
+    # df['MAMA'] = mama
+    # df['FAMA'] = fama
 
     # 8. MAVP
     # df['MAVP'] = talib.MAVP(df['close'], fastperiod=3, slowperiod=10, matype=0)
 
     # 9. MIDPOINT
-    df['MIDPOINT'] = talib.MIDPOINT(df['close'], timeperiod=30)
+    df['MIDPOINT'] = talib.MIDPOINT(df['close'], timeperiod=28)
 
     # 10. MIDPRICE
-    df['MIDPRICE'] = talib.MIDPRICE(df['high'], df['low'], timeperiod=30)
+    df['MIDPRICE'] = talib.MIDPRICE(df['high'], df['low'], timeperiod=28)
 
     # 11. SAR
     df['SAR'] = talib.SAR(df['high'], df['low'], acceleration=0, maximum=0)
@@ -351,13 +351,13 @@ def add_technical_indicators_overlap_studies(df: pd.DataFrame) -> pd.DataFrame:
     df['T3'] = talib.T3(df['close'], timeperiod=5, vfactor=0)
 
     # 15. TEMA
-    df['TEMA'] = talib.TEMA(df['close'], timeperiod=30)
+    # df['TEMA'] = talib.TEMA(df['close'], timeperiod=30)
 
     # 16. TRIMA
-    df['TRIMA'] = talib.TRIMA(df['close'], timeperiod=30)       
+    df['TRIMA'] = talib.TRIMA(df['close'], timeperiod=28)       
     
     # 17. WMA
-    df['WMA'] = talib.WMA(df['close'], timeperiod=30)
+    df['WMA'] = talib.WMA(df['close'], timeperiod=28)
     
     return df
 

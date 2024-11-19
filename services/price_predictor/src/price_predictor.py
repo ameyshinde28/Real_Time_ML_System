@@ -1,7 +1,7 @@
 import json
 from pydantic import BaseModel
 import joblib
-
+from datetime import datetime, timezone
 from loguru import logger 
 
 
@@ -15,13 +15,19 @@ from src.config import (
 from src.hopsworks_api import push_value_to_feature_group
 # from price_predictor import PricePredictor
 from src.ohlc_data_reader import OhlcDataReader
-
-
+from src.preprocessing import keep_only_numeric_columns
+from src.utils import timestamp_ms_to_human_readable_utc
 class PricePrediction(BaseModel):
+    price: float
     timestamp_ms: int
     product_id: str
-    price: float
+    timestamp: str
+    predicted_perc_change: float
+    current_price: float
 
+
+    def to_json(self) -> str:
+        return json.dumps(self.model_dump())
 
 
 class PricePredictor:
@@ -144,6 +150,7 @@ class PricePredictor:
             experiment.get_parameters_summary('feature_view_version')['valueCurrent']
         )
         last_n_minutes = int(experiment.get_parameters_summary('last_n_minutes')['valueCurrent'])
+        # last_n_minutes = 60
         print("last_n_minutes exp:", last_n_minutes, "Type:", type(last_n_minutes))
 
 
@@ -184,11 +191,62 @@ class PricePredictor:
 
         logger.debug(f"Read {len(ohlc_data)} OHLCV candles from online store feature group")
 
-        breakpoint()
+
+        #keep only numeric columns
+        ohlc_data = keep_only_numeric_columns(ohlc_data)
+
+        # add technical indicators and temporal
+        from src.feature_engineering import add_technical_indicators_and_temporal_features
+        logger.debug(f"Adding technical indicators and temporal features")
+
+        ohlc_data = add_technical_indicators_and_temporal_features(ohlc_data)
+        # breakpoint()
+
+        # double check rows for missing values
+        logger.debug(f"Checking the last row of the dataframe has no missing values")
+        assert ohlc_data.iloc[-1].isna().sum() == 0, "The last row of the dataframe has missing values"
+
+        # Extract the last row of the ohlc data
+        features = ohlc_data.iloc[[-1]]
+        # breakpoint()
         # make a prediction
-        prediction = self.model.predict(ohlc_data)
+        predicted_price = self.model.predict(features)[0]
         
+        # get the timestamp_ms that corresponds to the predicted_price
+        prediction_timestamp_ms = int(features["timestamp_ms"].values[0]) + \
+            self.forecast_steps * self.ohlc_window_sec *1000 
+
+
+        # Calculate predicted precentage
+
+        predicted_perc_change = \
+            (predicted_price - features["close"].values[0]) / features["close"].values[0]
+
+
+        # build a response object
+        prediction=PricePrediction(
+            price=predicted_price,
+            timestamp_ms=prediction_timestamp_ms,
+            product_id=self.product_id,
+            timestamp=timestamp_ms_to_human_readable_utc(prediction_timestamp_ms),
+            predicted_perc_change=predicted_perc_change.round(6),
+            current_price=features['close'].values[0],
+        )
+
+        return prediction
+
     
     def _load_model_from_registry(self) -> "Model":
         pass
     
+if __name__ == "__main__":
+    predictor = PricePredictor.from_model_registry(
+        product_id="ETH/USD",
+        ohlc_window_sec=60,
+        forecast_steps=5,
+        status="production",
+    )
+
+    prediction = predictor.predict()
+    logger.info(f"Prediction: {prediction.to_json()}")
+    # logger.info(f"Prediciton timestamp: {prediction.timestamp_ms_to_human_readable_utc()}")

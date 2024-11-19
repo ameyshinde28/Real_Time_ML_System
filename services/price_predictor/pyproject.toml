@@ -15,6 +15,8 @@ comet-ml = "^3.47.0"
 xgboost = "^2.1.1"
 ta-lib = "^0.4.32"
 optuna = "^4.0.0"
+fastapi = "^0.115.5"
+uvicorn = "^0.32.0"
 
 
 [build-system]

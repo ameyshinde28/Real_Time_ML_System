@@ -12,7 +12,7 @@ from src.models.current_price_baseline import CurrentPriceBaseLine
 from src.models.xgboost_model import XGBoostModel
 from src.utils import hash_dataframe
 from src.model_registry import get_model_name
-
+from src.preprocessing import keep_only_numeric_columns
 
 def train_model(
     comet_config: CometConfig,
@@ -128,8 +128,8 @@ def train_model(
     
     # Keep only the features that are needed for the model
     
-    X_train = X_train[['open', 'high', 'low', 'close', 'volume', 'timestamp_ms']]
-    X_test = X_test[['open', 'high', 'low', 'close', 'volume', 'timestamp_ms']]
+    X_train = keep_only_numeric_columns(X_train)
+    X_test =  keep_only_numeric_columns(X_test)
     
     
     # Log dimensions of the features and target

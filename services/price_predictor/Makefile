@@ -1,21 +1,18 @@
-<<<<<<< HEAD
 training-dev:
 	poetry run python src/training.py
 
-prediction-dev:
-	poetry run python src/prediction.py
+api-dev:
+	poetry run uvicorn src.api:app --reload --port 9999
 
-=======
-training:
-	poetry run python src/training.py
+check-health:
+	curl -X GET http://localhost:9999/health
 
->>>>>>> fix-backfill
+predict-request:
+		curl -X GET "http://localhost:9999/predict?product_id=ETH%2FUSD"
+
+
 build:
 	docker build -t price_predictor_training .
 
 run: build
-<<<<<<< HEAD
 	docker run --env-file .env price_predictor_training
-=======
-	docker run --env-file .env price_predictor_training
->>>>>>> fix-backfill
