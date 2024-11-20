@@ -2,7 +2,7 @@ name: trade_producer
 language: python
 variables:
   - name: KAFKA_TOPIC
-    inputType: InputTopic
+    inputType: OutputTopic
     description: ''
     defaultValue: trades
     required: true
