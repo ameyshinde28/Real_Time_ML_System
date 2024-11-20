@@ -13,7 +13,7 @@ variables:
     required: true
   - name: LIVE_OR_HISTORICAL
     inputType: FreeText
-    description: ''
+    description: Either live or historical
     defaultValue: live
     required: true
 dockerfile: Dockerfile
