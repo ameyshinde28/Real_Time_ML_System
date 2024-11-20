@@ -16,7 +16,7 @@ deployments:
       replicas: 1
     variables:
       - name: KAFKA_TOPIC
-        inputType: InputTopic
+        inputType: OutputTopic
         description: ''
         required: true
         value: trades
