@@ -1,0 +1,5 @@
+name: trade_producer
+language: python
+dockerfile: Dockerfile
+runEntryPoint: src/main.py
+defaultFile: src/main.py
