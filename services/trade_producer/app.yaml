@@ -11,6 +11,11 @@ variables:
     description: List of crypto currencies we want to get trades for
     defaultValue: '["ETH/USD", "BTC/USD"]'
     required: true
+  - name: LIVE_OR_HISTORICAL
+    inputType: FreeText
+    description: ''
+    defaultValue: live
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
