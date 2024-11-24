@@ -6,30 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: trade_producer
-    application: services/trade_producer
-    version: latest
-    deploymentType: Service
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    variables:
-      - name: KAFKA_TOPIC
-        inputType: OutputTopic
-        description: ''
-        required: true
-        value: trades
-      - name: PRODUCT_IDS
-        inputType: FreeText
-        description: List of crypto currencies we want to get trades for
-        required: true
-        value: '["ETH/USD", "BTC/USD"]'
-      - name: LIVE_OR_HISTORICAL
-        inputType: FreeText
-        description: Either live or historical
-        required: true
-        value: live
   - name: trade_to_ohlc
     application: services/trade_to_ohlc
     version: latest
