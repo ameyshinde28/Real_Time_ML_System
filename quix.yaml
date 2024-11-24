@@ -19,7 +19,7 @@ deployments:
         inputType: InputTopic
         description: This is where trades are read from
         required: true
-        value: trades
+        value: trade_live
       - name: KAFKA_OUTPUT_TOPIC
         inputType: OutputTopic
         description: this is where ohlcv candles are sent
