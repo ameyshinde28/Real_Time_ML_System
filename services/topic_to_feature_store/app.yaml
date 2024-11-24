@@ -6,6 +6,11 @@ variables:
     description: ''
     defaultValue: ohlcv_live
     required: true
+  - name: KAFKA_CONSUMER_GROUP
+    inputType: FreeText
+    description: ''
+    defaultValue: consumer_group_ohlcv_to_feature_store
+    required: false
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
