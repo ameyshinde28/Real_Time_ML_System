@@ -38,11 +38,6 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: trades
-    configuration:
-      replicationFactor: 2
-      retentionInMinutes: 1440
-      retentionInBytes: 52428800
   - name: ohlcv
     configuration:
       replicationFactor: 2
