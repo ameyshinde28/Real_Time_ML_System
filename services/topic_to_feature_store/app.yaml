@@ -10,7 +10,7 @@ variables:
     inputType: FreeText
     description: ''
     defaultValue: consumer_group_ohlcv_to_feature_store
-    required: false
+    required: true
   - name: FEATURE_GROUP_NAME
     inputType: FreeText
     description: ''
