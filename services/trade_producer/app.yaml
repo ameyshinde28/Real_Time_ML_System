@@ -4,7 +4,7 @@ variables:
   - name: KAFKA_TOPIC
     inputType: OutputTopic
     description: ''
-    defaultValue: trades
+    defaultValue: trade_live
     required: true
   - name: PRODUCT_IDS
     inputType: FreeText
