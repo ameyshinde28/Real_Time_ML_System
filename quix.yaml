@@ -30,10 +30,44 @@ deployments:
         description: Either live or historical
         required: true
         value: live
+  - name: trade_to_ohlc
+    application: services/trade_to_ohlc
+    version: latest
+    deploymentType: Service
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    variables:
+      - name: KAFKA_INPUT_TOPIC
+        inputType: InputTopic
+        description: This is where trades are read from
+        required: true
+        value: trades
+      - name: KAFKA_OUTPUT_TOPIC
+        inputType: OutputTopic
+        description: this is where ohlcv candles are sent
+        required: true
+        value: ohlcv
+      - name: KAFKA_CONSUMER_GROUP
+        inputType: FreeText
+        description: ''
+        required: true
+        value: trades_to_ohlcv_consumer_group
+      - name: OHLCV_WINDOW_SECONDS
+        inputType: FreeText
+        description: window seconds
+        required: true
+        value: '60 '
 
 # This section describes the Topics of the data pipeline
 topics:
   - name: trades
+    configuration:
+      replicationFactor: 2
+      retentionInMinutes: 1440
+      retentionInBytes: 52428800
+  - name: ohlcv
     configuration:
       replicationFactor: 2
       retentionInMinutes: 1440
