@@ -45,7 +45,7 @@ topics:
       retentionInBytes: 52428800
   - name: trades
     configuration:
-      partitions: 1
+      partitions: 2
       replicationFactor: 2
       retentionInMinutes: 1440
       retentionInBytes: 52428800
