@@ -51,7 +51,7 @@ deployments:
         inputType: OutputTopic
         description: this is where ohlcv candles are sent
         required: true
-        value: ohlcv
+        value: ohlcv_live
       - name: KAFKA_CONSUMER_GROUP
         inputType: FreeText
         description: ''
