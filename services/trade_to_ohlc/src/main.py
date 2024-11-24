@@ -85,7 +85,7 @@ def transform_trade_to_ohlcv(
     # Create a Quix Streams dataframe
     sdf = app.dataframe(input_topic)
     
-    # sdf.update(logger.debug)
+    sdf.update(logger.debug)
     
     
     sdf = (
