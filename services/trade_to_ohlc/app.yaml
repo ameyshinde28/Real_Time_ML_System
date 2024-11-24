@@ -9,7 +9,7 @@ variables:
   - name: KAFKA_OUTPUT_TOPIC
     inputType: OutputTopic
     description: this is where ohlcv candles are sent
-    defaultValue: ohlcv
+    defaultValue: ohlcv_live
     required: true
   - name: KAFKA_CONSUMER_GROUP
     inputType: FreeText
