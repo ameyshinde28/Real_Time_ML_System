@@ -26,6 +26,11 @@ variables:
     description: ''
     defaultValue: '["product_id", "timestamp_ms"]'
     required: false
+  - name: FEATURE_GROUP_EVENT_TIME
+    inputType: FreeText
+    description: ''
+    defaultValue: timestamp_ms
+    required: false
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
