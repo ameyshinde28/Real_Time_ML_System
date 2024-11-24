@@ -46,6 +46,11 @@ variables:
     description: ''
     defaultValue: HOPSWORKS_API_KEY
     required: true
+  - name: BATCH_SIZE
+    inputType: FreeText
+    description: ''
+    defaultValue: 40000
+    required: false
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
