@@ -15,7 +15,7 @@ variables:
     inputType: FreeText
     description: ''
     defaultValue: ohlcv_feature_group
-    required: false
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
