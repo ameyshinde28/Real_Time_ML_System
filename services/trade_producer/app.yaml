@@ -16,6 +16,11 @@ variables:
     description: Either live or historical
     defaultValue: live
     required: true
+  - name: LAST_N_DAYS
+    inputType: FreeText
+    description: no of days i the past
+    defaultValue: 30
+    required: false
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
