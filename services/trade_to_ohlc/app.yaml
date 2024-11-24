@@ -6,6 +6,11 @@ variables:
     description: This is where trades are read from
     defaultValue: trades
     required: true
+  - name: KAFKA_OUTPUT_TOPIC
+    inputType: OutputTopic
+    description: this is where ohlcv candles are sent
+    defaultValue: ohlcv
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
