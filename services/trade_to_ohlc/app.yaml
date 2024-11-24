@@ -4,7 +4,7 @@ variables:
   - name: KAFKA_INPUT_TOPIC
     inputType: InputTopic
     description: This is where trades are read from
-    defaultValue: trades
+    defaultValue: trade_live
     required: true
   - name: KAFKA_OUTPUT_TOPIC
     inputType: OutputTopic
