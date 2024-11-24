@@ -1,5 +1,11 @@
 name: topic_to_feature_store
 language: python
+variables:
+  - name: KAFKA_INPUT_TOPIC
+    inputType: InputTopic
+    description: ''
+    defaultValue: ohlcv_live
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/main.py
 defaultFile: src/main.py
