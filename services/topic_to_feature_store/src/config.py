@@ -3,7 +3,7 @@ from typing import List, Optional
 
 class AppConfig(BaseSettings):
     
-    kafka_broker_address: str
+    kafka_broker_address: Optional[str]
     kafka_input_topic: str
     kafka_consumer_group: str
     feature_group_name: str
