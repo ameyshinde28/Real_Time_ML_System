@@ -91,12 +91,6 @@ topics:
       replicationFactor: 2
       retentionInMinutes: 1440
       retentionInBytes: 52428800
-  - name: trades
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 1440
-      retentionInBytes: 52428800
   - name: trade_live
     configuration:
       partitions: 2
