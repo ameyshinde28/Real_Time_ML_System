@@ -54,6 +54,11 @@ deployments:
         description: ''
         required: true
         value: trades_to_ohlcv_consumer_group
+      - name: OHLCV_WINDOW_SECONDS
+        inputType: FreeText
+        description: window seconds
+        required: true
+        value: '60 '
 
 # This section describes the Topics of the data pipeline
 topics:
