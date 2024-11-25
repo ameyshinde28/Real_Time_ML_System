@@ -41,6 +41,11 @@ variables:
     description: ''
     defaultValue: ETH/USD
     required: true
+  - name: LAST_N_DAYS
+    inputType: FreeText
+    description: ''
+    defaultValue: 120
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
