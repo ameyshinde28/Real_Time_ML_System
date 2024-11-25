@@ -61,6 +61,11 @@ variables:
     description: ''
     defaultValue: 30
     required: true
+  - name: API_SUPPORTED_PRODUCT_IDS
+    inputType: FreeText
+    description: ''
+    defaultValue: '["ETH/USD"]'
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
