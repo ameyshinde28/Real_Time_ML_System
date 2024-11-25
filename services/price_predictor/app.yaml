@@ -26,6 +26,11 @@ variables:
     description: ''
     defaultValue: production
     required: true
+  - name: FEATURE_GROUP_NAME
+    inputType: FreeText
+    description: ''
+    defaultValue: ohlcv_feature_group
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
