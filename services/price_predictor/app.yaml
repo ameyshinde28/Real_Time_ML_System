@@ -1,5 +1,11 @@
 name: price_predictor
 language: python
+variables:
+  - name: FEATURE_VIEW_NAME
+    inputType: FreeText
+    description: ''
+    defaultValue: ohlcv_feature_view
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
