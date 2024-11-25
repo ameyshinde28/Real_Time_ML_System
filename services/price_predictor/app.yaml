@@ -56,6 +56,11 @@ variables:
     description: ''
     defaultValue: 2
     required: true
+  - name: LAST_N_MINUTES
+    inputType: FreeText
+    description: ''
+    defaultValue: 30
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
