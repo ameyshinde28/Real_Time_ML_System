@@ -1,4 +1,4 @@
-name: topic_to_feature_store
+name: price_predictor
 language: python
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
