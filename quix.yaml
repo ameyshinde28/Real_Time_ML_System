@@ -244,10 +244,10 @@ deployments:
   - name: price_predictor_training
     application: services/price_predictor
     version: latest
-    deploymentType: Service
+    deploymentType: Job
     resources:
-      cpu: 1000
-      memory: 500
+      cpu: 1500
+      memory: 1000
       replicas: 1
     variables:
       - name: FEATURE_VIEW_NAME
