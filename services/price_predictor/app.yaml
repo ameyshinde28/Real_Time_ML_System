@@ -16,6 +16,11 @@ variables:
     description: ''
     defaultValue: 60
     required: true
+  - name: FORECAST_STEPS
+    inputType: FreeText
+    description: ''
+    defaultValue: 5
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
