@@ -46,6 +46,11 @@ variables:
     description: ''
     defaultValue: 120
     required: true
+  - name: N_SEARCH_TRIALS
+    inputType: FreeText
+    description: ''
+    defaultValue: 10
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
