@@ -2,17 +2,29 @@ training-dev:
 	poetry run python src/training.py
 
 api-dev:
-	poetry run uvicorn src.api:app --reload --port 9999
+	poetry run uvicorn src.api:app --reload --port 8000
 
 check-health:
-	curl -X GET http://localhost:9999/health
+	curl -X GET http://localhost:8000/health
 
 predict-request:
-		curl -X GET "http://localhost:9999/predict?product_id=ETH%2FUSD"
+		curl -X GET "http://localhost:8000/predict?product_id=ETH%2FUSD"
 
-
+# Build the docker image
 build:
-	docker build -t price_predictor_training .
+	docker build -t price_predictor .
 
-run: build
-	docker run --env-file .env price_predictor_training
+# Run the training script instide theDocker container
+training: build
+	docker run \
+		--env-file .env \
+		-e TRAINING_OR_PREDICTION=training \
+		price_predictor \
+  
+# Run the API inside Docker container
+api: build
+	docker run \
+		-p 8000:8000 \
+		--env-file .env \
+		-e TRAINING_OR_PREDICTION=prediction \
+		price_predictor 

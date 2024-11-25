@@ -1,0 +1,5 @@
+name: topic_to_feature_store
+language: python
+dockerfile: Dockerfile
+runEntryPoint: src/training.py
+defaultFile: src/training.py

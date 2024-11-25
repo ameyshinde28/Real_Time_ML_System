@@ -21,11 +21,23 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
 # Install Python poetry
 RUN pip install poetry==1.8.3
 
-# Copy the source code to the working directory
+# Copy only dependency files
+# COPY pyproject.toml poetry.lock README.md /app/
+
+# Cpoy the rest of the source code
 COPY . /app
 
 #Install dependencies
 RUN poetry install
 
+EXPOSE 8000
+
 # Run the appilicaion
-CMD [ "poetry", "run", "python", "src/training.py"]
+# Use an environment variable to determine which script to run
+CMD if [ "$TRAINING_OR_PREDICTION" = "training" ]; then \
+        poetry run python src/training.py; \
+    elif [ "$TRAINING_OR_PREDICTION" = "prediction" ]; then \
+        poetry run uvicorn src.api:app --host 0.0.0.0 --port 8000; \
+    else \
+        echo "Invalid TRAINING_OR_PREDICTION. Please set TRAINING_OR_PREDICTION to 'training' or 'prediction'." && exit 1; \
+    fi
