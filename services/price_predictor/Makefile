@@ -24,7 +24,7 @@ training: build
 # Run the API inside Docker container
 api: build
 	docker run \
-		-p 8000:8000 \
+		-p 8000:80 \
 		--env-file .env \
 		-e TRAINING_OR_PREDICTION=prediction \
 		price_predictor 

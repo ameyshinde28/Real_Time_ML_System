@@ -30,14 +30,14 @@ COPY . /app
 #Install dependencies
 RUN poetry install
 
-EXPOSE 8000
+EXPOSE 80
 
 # Run the appilicaion
 # Use an environment variable to determine which script to run
 CMD if [ "$TRAINING_OR_PREDICTION" = "training" ]; then \
         poetry run python src/training.py; \
     elif [ "$TRAINING_OR_PREDICTION" = "prediction" ]; then \
-        poetry run uvicorn src.api:app --host 0.0.0.0 --port 8000; \
+        poetry run uvicorn src.api:app --host 0.0.0.0 --port 80; \
     else \
         echo "Invalid TRAINING_OR_PREDICTION. Please set TRAINING_OR_PREDICTION to 'training' or 'prediction'." && exit 1; \
     fi
