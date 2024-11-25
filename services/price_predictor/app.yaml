@@ -36,6 +36,11 @@ variables:
     description: ''
     defaultValue: 1
     required: true
+  - name: PRODUCT_ID
+    inputType: FreeText
+    description: ''
+    defaultValue: ETH/USD
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
