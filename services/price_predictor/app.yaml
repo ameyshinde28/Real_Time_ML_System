@@ -66,6 +66,11 @@ variables:
     description: ''
     defaultValue: '["ETH/USD"]'
     required: true
+  - name: TRAINING_OR_PREDICTION
+    inputType: FreeText
+    description: ''
+    defaultValue: training
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
