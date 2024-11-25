@@ -71,6 +71,11 @@ variables:
     description: ''
     defaultValue: training
     required: true
+  - name: HOPSWORKS_PROJECT_NAME
+    inputType: Secret
+    description: ''
+    defaultValue: HOPSWORKS_PROJECT_NAME
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
