@@ -345,6 +345,113 @@ deployments:
         description: ''
         required: true
         secretKey: COMET_WORKSPACE
+  - name: price_predictor_api
+    application: services/price_predictor
+    version: latest
+    deploymentType: Service
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: price-predictor
+    variables:
+      - name: FEATURE_VIEW_NAME
+        inputType: FreeText
+        description: ''
+        required: true
+        value: ohlcv_feature_view
+      - name: FEATURE_VIEW_VERSION
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 1
+      - name: OHLC_WINDOW_SEC
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
+      - name: FORECAST_STEPS
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 5
+      - name: ML_MODEL_STATUS
+        inputType: FreeText
+        description: ''
+        required: true
+        value: production
+      - name: FEATURE_GROUP_NAME
+        inputType: FreeText
+        description: ''
+        required: true
+        value: ohlcv_feature_group
+      - name: FEATURE_GROUP_VERSION
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 1
+      - name: PRODUCT_ID
+        inputType: FreeText
+        description: ''
+        required: true
+        value: ETH/USD
+      - name: LAST_N_DAYS
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 120
+      - name: N_SEARCH_TRIALS
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 10
+      - name: N_SPLITS
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 2
+      - name: LAST_N_MINUTES
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 30
+      - name: API_SUPPORTED_PRODUCT_IDS
+        inputType: FreeText
+        description: ''
+        required: true
+        value: '["ETH/USD"]'
+      - name: TRAINING_OR_PREDICTION
+        inputType: FreeText
+        description: ''
+        required: true
+        value: prediction
+      - name: HOPSWORKS_PROJECT_NAME
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: HOPSWORKS_PROJECT_NAME
+      - name: HOPSWORKS_API_KEY
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: HOPSWORKS_API_KEY
+      - name: COMET_ML_API_KEY
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: COMET_ML_API_KEY
+      - name: COMET_PROJECT_NAME
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: COMET_PROJECT_NAME
+      - name: COMET_WORKSPACE
+        inputType: Secret
+        description: ''
+        required: true
+        secretKey: COMET_WORKSPACE
 
 # This section describes the Topics of the data pipeline
 topics:
