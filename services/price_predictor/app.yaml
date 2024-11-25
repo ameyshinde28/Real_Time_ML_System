@@ -51,6 +51,11 @@ variables:
     description: ''
     defaultValue: 10
     required: true
+  - name: N_SPLITS
+    inputType: FreeText
+    description: ''
+    defaultValue: 2
+    required: true
 dockerfile: Dockerfile
 runEntryPoint: src/training.py
 defaultFile: src/training.py
