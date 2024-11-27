@@ -1,0 +1,39 @@
+name: Run Unit Test
+
+on:
+  push:
+    branches:
+      - dev
+    
+  workflow_dispatch:
+
+jobs:
+
+  test_trade_to_ohlc:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Add Poetry to PATH
+      run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        cd services/trade_to_ohlc
+        poetry install
+
+    - name: Test trade_to_ohlc
+      run: |
+        cd services/trade_to_ohlc
+        make test

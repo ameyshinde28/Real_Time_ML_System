@@ -20,3 +20,6 @@ run-historical: build
 		--network=redpanda_network \
 		--env-file historical.prod.env \
 		trade_to_ohlc
+
+test:
+	poetry run pytest tests
