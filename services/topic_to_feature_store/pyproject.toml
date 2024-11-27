@@ -10,8 +10,9 @@ python = ">=3.12,<3.13"
 quixstreams = "^2.11.1"
 loguru = "^0.7.2"
 pydantic = "^2.9.2"
-hopsworks = "4.1.0"
+hopsworks = {extras = ["python"], version = "^4.1.0"}
 kafka-python = "^2.0.2"
+pyarrow = "^18.1.0"
 
 
 [build-system]
