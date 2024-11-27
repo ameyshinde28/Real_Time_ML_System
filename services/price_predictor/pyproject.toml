@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-hopsworks = "^3.7.0"
+hopsworks = "^4.1"
 pydantic-settings = "^2.5.2"
 loguru = "^0.7.2"
 scikit-learn = "^1.5.2"

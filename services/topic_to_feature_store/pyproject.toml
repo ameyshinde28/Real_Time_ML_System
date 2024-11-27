@@ -10,7 +10,7 @@ python = ">=3.12,<3.13"
 quixstreams = "^2.11.1"
 loguru = "^0.7.2"
 pydantic = "^2.9.2"
-hopsworks = "^3.7.0"
+hopsworks = "^4.1"
 kafka-python = "^2.0.2"
 
 
