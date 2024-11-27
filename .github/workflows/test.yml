@@ -37,3 +37,9 @@ jobs:
       run: |
         cd services/trade_to_ohlc
         make test
+      
+    - name: Test price_predictor
+      run: |
+        cd services/trade_to_ohlc
+        make test
+    

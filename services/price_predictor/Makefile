@@ -34,3 +34,7 @@ check-health-prod:
 
 predict-request-prod:
 		curl -X GET "https://price-predictor-aammeeyy28-realtimemlsystem-production1.deployments.quix.io/predict?product_id=ETH%2FUSD"
+
+
+test:
+	poetry run pytest tests/test_utils.py
