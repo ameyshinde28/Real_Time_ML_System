@@ -33,7 +33,7 @@ jobs:
         cd services/trade_to_ohlc
         poetry install
 
-    - name: Test trade_to_ohlc
+    - name: Test trade_to_ohlc service
       run: |
         cd services/trade_to_ohlc
         make test
