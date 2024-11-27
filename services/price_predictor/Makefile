@@ -28,3 +28,9 @@ api: build
 		--env-file .env \
 		-e TRAINING_OR_PREDICTION=prediction \
 		price_predictor 
+
+check-health-prod:
+	curl -X GET https://price-predictor-aammeeyy28-realtimemlsystem-production1.deployments.quix.io/health
+
+predict-request-prod:
+		curl -X GET "https://price-predictor-aammeeyy28-realtimemlsystem-production1.deployments.quix.io/predict?product_id=ETH%2FUSD"
