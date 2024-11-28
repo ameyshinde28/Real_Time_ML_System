@@ -91,3 +91,21 @@ jobs:
       run: |
         cd services/price_predictor
         make test
+
+  deploy_to_dev:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Quix sync
+      - name: Quix sync
+        run: |
+          echo Installing Quix CLI
+          curl -fsSL https://github.com/quixio/quix-cli/raw/main/install.sh | bash
+          echo Logging into Quix Cloud
+          quix login ${{ secrets.QUIX_PAT }}
+          quix cloud env sync ${{ secrets.DEV_WORKSPACE_ID }}
