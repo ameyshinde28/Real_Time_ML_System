@@ -94,6 +94,7 @@ jobs:
 
   deploy_to_dev:
     # The type of runner that the job will run on
+    needs: test_price_predictor
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
