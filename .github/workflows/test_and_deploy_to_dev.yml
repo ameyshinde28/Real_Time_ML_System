@@ -1,0 +1,114 @@
+name: Run Unit Test and Deploy
+
+on:
+  push:
+    branches:
+      - dev
+    
+  workflow_dispatch:
+
+jobs:
+
+  test_trade_to_ohlc:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.12.3
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.3'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Add Poetry to PATH
+      run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        cd services/trade_to_ohlc
+        poetry install
+
+    - name: Test trade_to_ohlc
+      run: |
+        cd services/trade_to_ohlc
+        make test
+      
+    # - name: Test price_predictor
+    #   run: |
+    #     cd services/trade_to_ohlc
+    #     make test
+  
+  # test_price_predictor:
+  #   needs: test_trade_to_ohlc
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v3
+
+  #   - name: Set up Python 3.12.3
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.12.3'
+
+  #   - name: Cache TA-Lib
+  #     id: cache-talib
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: /usr/local/lib/libta_lib.so.0.0.0
+  #       key: ${{ runner.os }}-talib-0.4.0
+
+  #   - name: Install TA-Lib dependencies
+  #     if: steps.cache-talib.outputs.cache-hit != 'true'
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install -y build-essential wget
+  #       wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+  #       tar -xzf ta-lib-0.4.0-src.tar.gz
+  #       cd ta-lib/
+  #       ./configure --prefix=/usr
+  #       make
+  #       sudo make install
+
+  #   - name: Install Poetry
+  #     run: |
+  #       curl -sSL https://install.python-poetry.org | python3 -
+
+  #   - name: Add Poetry to PATH
+  #     run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
+
+  #   - name: Install dependencies for price_predictor
+  #     run: |
+  #       cd services/price_predictor
+  #       poetry install
+
+  #   - name: Test price_predictor
+  #     run: |
+  #       cd services/price_predictor
+  #       make test
+
+  deploy_to_dev:
+    # The type of runner that the job will run on
+    needs: test_trade_to_ohlc
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Quix sync
+      - name: Quix sync
+        run: |
+          echo Installing Quix CLI
+          curl -fsSL https://github.com/quixio/quix-cli/raw/main/install.sh | bash
+          echo Logging into Quix Cloud
+          quix login ${{ secrets.QUIX_PAT }}
+          quix cloud env sync ${{ secrets.DEV_WORKSPACE_ID }}
+
+

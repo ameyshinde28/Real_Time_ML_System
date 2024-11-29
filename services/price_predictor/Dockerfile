@@ -6,7 +6,7 @@ FROM python:3.12.3-slim
 WORKDIR /app
 
 # Install build-essential which includes gcc and other build tools
-RUN apt-get update && apt-get install -y build-essential wget
+RUN apt-get update && apt-get install -y build-essential wget git
 
 # Download and install TA-Lib
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import joblib
 from datetime import datetime, timezone
 from loguru import logger 
-
+import os
 
 from src.model_registry import get_model_name
 from src.config import (
@@ -16,7 +16,7 @@ from src.hopsworks_api import push_value_to_feature_group
 # from price_predictor import PricePredictor
 from src.ohlc_data_reader import OhlcDataReader
 from src.preprocessing import keep_only_numeric_columns
-from src.utils import timestamp_ms_to_human_readable_utc
+from src.utils import timestamp_ms_to_human_readable_utc,  get_git_commit_hash
 class PricePrediction(BaseModel):
     price: float
     timestamp_ms: int
@@ -24,7 +24,8 @@ class PricePrediction(BaseModel):
     timestamp: str
     predicted_perc_change: float
     current_price: float
-
+    
+    metadata: dict
 
     def to_json(self) -> str:
         return json.dumps(self.model_dump())
@@ -222,6 +223,9 @@ class PricePredictor:
         predicted_perc_change = \
             (predicted_price - features["close"].values[0]) / features["close"].values[0]
 
+        metadata = {
+            "git_commit_hash":  get_git_commit_hash(),
+        }
 
         # build a response object
         prediction=PricePrediction(
@@ -231,6 +235,7 @@ class PricePredictor:
             timestamp=timestamp_ms_to_human_readable_utc(prediction_timestamp_ms),
             predicted_perc_change=predicted_perc_change.round(6),
             current_price=features['close'].values[0],
+            metadata=metadata
         )
 
         return prediction
