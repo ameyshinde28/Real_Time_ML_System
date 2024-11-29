@@ -16,7 +16,7 @@ from src.hopsworks_api import push_value_to_feature_group
 # from price_predictor import PricePredictor
 from src.ohlc_data_reader import OhlcDataReader
 from src.preprocessing import keep_only_numeric_columns
-from src.utils import timestamp_ms_to_human_readable_utc
+from src.utils import timestamp_ms_to_human_readable_utc,  get_git_commit_hash
 class PricePrediction(BaseModel):
     price: float
     timestamp_ms: int
@@ -224,7 +224,7 @@ class PricePredictor:
             (predicted_price - features["close"].values[0]) / features["close"].values[0]
 
         metadata = {
-            "git_commit_hash": os.getenv("GITHUB_SHA"),
+            "git_commit_hash":  get_git_commit_hash(),
         }
 
         # build a response object
