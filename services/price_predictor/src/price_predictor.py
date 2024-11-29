@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import joblib
 from datetime import datetime, timezone
 from loguru import logger 
-
+import os
 
 from src.model_registry import get_model_name
 from src.config import (
@@ -24,7 +24,8 @@ class PricePrediction(BaseModel):
     timestamp: str
     predicted_perc_change: float
     current_price: float
-
+    
+    metadata: dict
 
     def to_json(self) -> str:
         return json.dumps(self.model_dump())
@@ -222,6 +223,9 @@ class PricePredictor:
         predicted_perc_change = \
             (predicted_price - features["close"].values[0]) / features["close"].values[0]
 
+        metadata = {
+            "git_commit_hash": os.getenv("GITHUB_SHA"),
+        }
 
         # build a response object
         prediction=PricePrediction(
