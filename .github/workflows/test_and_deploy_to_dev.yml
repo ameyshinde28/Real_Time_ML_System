@@ -110,3 +110,13 @@ jobs:
           echo Logging into Quix Cloud
           quix login ${{ secrets.QUIX_PAT }}
           quix cloud env sync ${{ secrets.DEV_WORKSPACE_ID }}
+
+
+      # Send Discord notification
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" -X POST -d '{
+            "content": "🚀 A new deployment to production has been completed!"
+          }' $DISCORD_WEBHOOK
