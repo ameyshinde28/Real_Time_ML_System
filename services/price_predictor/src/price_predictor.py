@@ -235,6 +235,7 @@ class PricePredictor:
             timestamp=timestamp_ms_to_human_readable_utc(prediction_timestamp_ms),
             predicted_perc_change=predicted_perc_change.round(6),
             current_price=features['close'].values[0],
+            metadata=metadata
         )
 
         return prediction
