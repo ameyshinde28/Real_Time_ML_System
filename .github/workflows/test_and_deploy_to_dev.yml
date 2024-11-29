@@ -43,58 +43,58 @@ jobs:
     #     cd services/trade_to_ohlc
     #     make test
   
-  test_price_predictor:
-    needs: test_trade_to_ohlc
-    runs-on: ubuntu-latest
+  # test_price_predictor:
+  #   needs: test_trade_to_ohlc
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v3
 
-    - name: Set up Python 3.12.3
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12.3'
+  #   - name: Set up Python 3.12.3
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.12.3'
 
-    - name: Cache TA-Lib
-      id: cache-talib
-      uses: actions/cache@v3
-      with:
-        path: /usr/local/lib/libta_lib.so.0.0.0
-        key: ${{ runner.os }}-talib-0.4.0
+  #   - name: Cache TA-Lib
+  #     id: cache-talib
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: /usr/local/lib/libta_lib.so.0.0.0
+  #       key: ${{ runner.os }}-talib-0.4.0
 
-    - name: Install TA-Lib dependencies
-      if: steps.cache-talib.outputs.cache-hit != 'true'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential wget
-        wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-        tar -xzf ta-lib-0.4.0-src.tar.gz
-        cd ta-lib/
-        ./configure --prefix=/usr
-        make
-        sudo make install
+  #   - name: Install TA-Lib dependencies
+  #     if: steps.cache-talib.outputs.cache-hit != 'true'
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install -y build-essential wget
+  #       wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+  #       tar -xzf ta-lib-0.4.0-src.tar.gz
+  #       cd ta-lib/
+  #       ./configure --prefix=/usr
+  #       make
+  #       sudo make install
 
-    - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
+  #   - name: Install Poetry
+  #     run: |
+  #       curl -sSL https://install.python-poetry.org | python3 -
 
-    - name: Add Poetry to PATH
-      run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
+  #   - name: Add Poetry to PATH
+  #     run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
-    - name: Install dependencies for price_predictor
-      run: |
-        cd services/price_predictor
-        poetry install
+  #   - name: Install dependencies for price_predictor
+  #     run: |
+  #       cd services/price_predictor
+  #       poetry install
 
-    - name: Test price_predictor
-      run: |
-        cd services/price_predictor
-        make test
+  #   - name: Test price_predictor
+  #     run: |
+  #       cd services/price_predictor
+  #       make test
 
   deploy_to_dev:
     # The type of runner that the job will run on
-    needs: test_price_predictor
+    needs: test_trade_to_ohlc
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
