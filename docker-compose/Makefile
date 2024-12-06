@@ -4,6 +4,12 @@ start-redpanda:
 stop-redpanda:
 	docker compose -f redpanda.yml down
 
+# Elastic Search and Kibana
+start-elasticsearch:
+	docker compose -f elastic_search_and_kibana.yml up -d
+stop-elasticsearch:
+	docker compose -f elastic_search_and_kibana.yml down
+
 start-feature-pipeline:
 	docker compose -f feature_pipeline.yml up --build -d
 
