@@ -1,4 +1,5 @@
-from loguru import logger
+# from loguru import logger
+from src.logger import logger
 from typing import List, Optional
 
 from quixstreams import Application
@@ -56,7 +57,7 @@ def produce_trades(
                     value=trade.model_dump())                
                 # Produce a message into the Kafka topic
                 producer.produce(topic=topic.name, value=message.value, key=message.key)
-                logger.debug(f"Pushed to Kafka: {trade}")
+                logger.info(f"Pushed to Kafka: {trade}")
                 
             # breakpoint()
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ run-live: build
 	docker run \
 		--network=redpanda_network \
 		--env-file live.prod.env \
+		--env-file elasticsearch.env \
 		trade_producer
 
 run-historical: build

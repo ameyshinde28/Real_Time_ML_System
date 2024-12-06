@@ -10,6 +10,11 @@ class AppConfig(BaseSettings):
     last_n_days: Optional[int] = None
     class Config:
         env_file = ".env"
-        
+class ElasticsearchConfig(BaseSettings):
+    elasticsearch_url: str
+
+    class Config:
+        env_file = "elasticsearch.env"
 config = AppConfig()
+elasticsearch_config= ElasticsearchConfig()
         

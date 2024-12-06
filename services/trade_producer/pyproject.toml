@@ -12,6 +12,7 @@ loguru = "^0.7.2"
 websocket-client = "^1.8.0"
 pydantic = "^2.9.2"
 pydantic-settings = "^2.5.2"
+elasticsearch = "^8.16.0"
 
 
 [build-system]
