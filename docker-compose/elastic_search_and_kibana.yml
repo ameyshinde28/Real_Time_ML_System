@@ -29,5 +29,9 @@ services:
       - elasticsearch
     networks:
       - redpanda_network
+    volumes:
+          - kibana_data:/usr/share/kibana/data
+
 volumes:
   elasticsearch_data:
+  kibana_data:
