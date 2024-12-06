@@ -24,5 +24,12 @@ class HopsworksConfig(BaseSettings):
     class Config:
         env_file = "credentials.env"
 
+class ElasticsearchConfig(BaseSettings):
+    elasticsearch_url: str
+
+    class Config:
+        env_file = "elasticsearch.env"
+
 config = AppConfig()
 hopsworks_config = HopsworksConfig()
+elasticsearch_config = ElasticsearchConfig()

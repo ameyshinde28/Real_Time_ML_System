@@ -1,7 +1,8 @@
 from typing import List, Optional
 
 from quixstreams import Application
-from loguru import logger
+# from loguru import logger
+from src.logger import logger
 
 from src.hopsworks_api import push_value_to_feature_group
 
@@ -70,7 +71,26 @@ def topic_to_feature_store(
             import json
             value = json.loads(value.decode('utf-8'))
             
-            logger.debug(f'Received message: {value}')
+            # logger.debug(
+            #     f'Received message: {value}',
+            #     # extra={
+            #     #     "timestamp": value["timestamp_ms"],
+            #     #     "product_id": value["product_id"],
+            #     #     "price": value["close"],
+            #     # }
+            #     "timestamp"=value["timestamp_ms"],
+            #     "product_id"=value["product_id"],
+            #     "price"= value["close"],
+            #     )
+            # from loguru import logger
+            from datetime import datetime, timezone
+            timestamp= datetime.fromtimestamp(value["timestamp_ms"] / 1000.0, tz=timezone.utc)
+
+            logger.bind(
+                timestamp=timestamp.isoformat(),
+                product_id=value["product_id"], 
+                price=value["close"]
+                ).info(f'Received message: {value}',)
             
             # Append the value to the batch of trades
             batch.append(value)
@@ -90,6 +110,7 @@ def topic_to_feature_store(
                 feature_group_event_time=feature_group_event_time,
                 start_offline_materialization=start_offline_materialization,
             )
+            logger.info(f"Pushed {len(batch)} messages to Feature group {feature_group_name}-{feature_group_version}")
             batch = []
             # breakpoint()
             
