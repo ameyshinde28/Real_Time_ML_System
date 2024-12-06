@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime, timezone
-
+import os
+# from price_predictor import PricePrediction
+from src.logger import logger
 
 # Function to create a consistent hash of a pandas DataFrame
 def hash_dataframe(df):
@@ -22,6 +24,22 @@ def get_git_commit_hash() -> str:
     try:
         git_commit_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
     except subprocess.CalledProcessError:
-        git_commit_hash = "Unknown"
+        git_commit_hash = os.environ.get('GIT_COMMIT_HASH', 'Unknown')
     
     return git_commit_hash
+
+def log_prediction_to_elasticsearch(prediction: 'PricePrediction'):
+    """_summary_
+
+    Args:
+        prediction (PricePrediction): _description_
+    """
+    timestamp= datetime \
+    .fromtimestamp(prediction.timestamp_ms / 1000.0, tz=timezone.utc) \
+    .isoformat()
+
+    logger.bind(
+        timestamp=timestamp,
+        product_id=prediction.product_id, 
+        price=prediction.price
+    ).info(f'Prediction: {prediction.to_json()}',)

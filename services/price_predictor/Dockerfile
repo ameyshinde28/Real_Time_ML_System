@@ -32,6 +32,8 @@ RUN poetry install
 
 EXPOSE 80
 
+ARG GIT_COMMIT_HASH=Unknown
+ENV GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
 # Run the appilicaion
 # Use an environment variable to determine which script to run
 CMD if [ "$TRAINING_OR_PREDICTION" = "training" ]; then \

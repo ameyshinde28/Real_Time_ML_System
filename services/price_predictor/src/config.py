@@ -62,9 +62,16 @@ class CometConfig(BaseSettings):
     class Config:
         env_file = "comet.credentials.env"
 
-  
+
+class ElasticsearchConfig(BaseSettings):
+    elasticsearch_url: str
+
+    class Config:
+        env_file = "elasticsearch.env"
+
 config = AppConfig()
 # training_config = TrainingConfigConfig()
 # prediction_config = PredictionConfig()
 hopsworks_config = HopsworksConfig()
 comet_config=CometConfig()
+elasticsearch_config= ElasticsearchConfig()

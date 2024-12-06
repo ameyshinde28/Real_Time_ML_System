@@ -12,7 +12,9 @@ predict-request-local:
 
 # Build the docker image
 build:
-	docker build -t price_predictor .
+	docker build \
+	--build-arg GIT_COMMIT_HASH=$(git rev-parse HEAD) \
+	-t price_predictor .
 
 # Run the training script instide theDocker container
 training: build
@@ -24,8 +26,10 @@ training: build
 # Run the API inside Docker container
 api: build
 	docker run \
+		--network=redpanda_network \
 		-p 8000:80 \
 		--env-file .env \
+		--env-file elasticsearch.env \
 		-e TRAINING_OR_PREDICTION=prediction \
 		price_predictor 
 

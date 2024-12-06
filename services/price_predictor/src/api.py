@@ -10,7 +10,7 @@ from src.model_registry import get_model_name
 from src.config import config, comet_config, CometConfig
 from src.hopsworks_api import push_value_to_feature_group
 from src.price_predictor import PricePredictor
-
+from src.utils import log_prediction_to_elasticsearch
 
 app = FastAPI()
 
@@ -56,6 +56,9 @@ def predict(
         predictor = predictors[product_id]
 
         prediction = predictor.predict()
+
+        
+        log_prediction_to_elasticsearch(prediction)
         return {"prediction": prediction.to_json()}
 
     except Exception as e:
