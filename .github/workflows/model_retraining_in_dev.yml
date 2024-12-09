@@ -1,0 +1,32 @@
+name: Model retraining
+
+on:
+  # push:
+  #   branches:
+  #     - dev
+
+  schedule:
+    # Runs every 1 hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  model_retraining_job:
+    # Add a condition to run only on the dev branch
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Quix CLI
+        run: |
+          echo Installing Quix CLI
+          curl -fsSL https://github.com/quixio/quix-cli/raw/main/install.sh | bash
+
+      - name: Login to Quix Cloud
+        run: quix login ${{ secrets.QUIX_PAT }}
+
+      - name: Sync Training Job
+        run: quix cloud deployments start ${{ secrets.DEV_MODEL_TRAINING_DEPLOYMENT_ID }}
