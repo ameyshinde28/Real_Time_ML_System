@@ -247,7 +247,7 @@ deployments:
     deploymentType: Job
     resources:
       cpu: 1500
-      memory: 1000
+      memory: 2000
       replicas: 1
     variables:
       - name: FEATURE_VIEW_NAME
