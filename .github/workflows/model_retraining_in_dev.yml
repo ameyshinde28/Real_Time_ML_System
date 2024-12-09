@@ -1,9 +1,9 @@
 name: Model retraining
 
 on:
-  # push:
-  #   branches:
-  #     - dev
+  push:
+    branches:
+      - dev
 
   schedule:
     # Runs every 1 hour
