@@ -44,7 +44,7 @@ class AppConfig(BaseSettings):
     api_supported_product_ids: list[str]
 
     class Config:
-        env_file = ".env"
+        env_file = "training.env"
 
 
 class HopsworksConfig(BaseSettings):

@@ -29,6 +29,7 @@ def train_model(
     n_search_trials: Optional[int] = 10,
     n_splits: Optional[int] = 3,
     last_n_minutes: Optional[int] = 30,
+    ml_model_status: Optional[str] = "development",
     
 ):
     """_summary_
@@ -247,6 +248,7 @@ def train_model(
         # Register the model in  Comet ML
         registered_model = experiment.register_model(
             model_name=model_name,
+            status=ml_model_status,
             # overwrite=True,
             
         )
@@ -274,4 +276,5 @@ if __name__ == "__main__":
         forecast_steps=config.forecast_steps,
         n_search_trials=config.n_search_trials,
         n_splits=config.n_splits,
+        ml_model_status=config.ml_model_status,
     )
