@@ -68,7 +68,7 @@ deployments:
   - name: trade_producer_historical
     application: services/trade_producer
     version: latest
-    deploymentType: Service
+    deploymentType: Job
     resources:
       cpu: 200
       memory: 500
