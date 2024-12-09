@@ -1,19 +1,17 @@
-name: Model retraining
+name: Backfill Features
 
 on:
-  # push:
-  #   branches:
-  #     - dev
+  # for debugging purposes only. I will remove it before merging
+  push:
+    branches:
+      - dev
 
   schedule:
-    # Runs every 1 hour
     - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
-  model_retraining_job:
-    # Add a condition to run only on the dev branch
-    if: github.ref == 'refs/heads/dev'
+  backfill_features_job:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,5 +26,5 @@ jobs:
       - name: Login to Quix Cloud
         run: quix login ${{ secrets.QUIX_PAT }}
 
-      - name: Sync Training Job
-        run: quix cloud deployments start ${{ secrets.DEV_MODEL_TRAINING_DEPLOYMENT_ID }}
+      - name: Backfill Features
+        run: quix cloud deployments start ${{ secrets.DEV_BACKFILL_TRADE_PRODUCER_DEPLOYMENT_ID }}
